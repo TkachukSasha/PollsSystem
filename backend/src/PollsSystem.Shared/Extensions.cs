@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using PollsSystem.Shared.Abstractions;
 using PollsSystem.Shared.Api.Cors;
+using PollsSystem.Shared.Api.Environments;
 using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Default;
 using PollsSystem.Shared.Observability.Logging;
@@ -17,7 +18,7 @@ public static class Extensions
         var appInfo = new AppInfo(appOptions.Name, appOptions.Version);
         builder.Services.AddSingleton(appInfo);
 
-        //builder.Configuration.SetEnvironmentConfiguration(builder.Environment);
+        builder.Configuration.SetEnvironmentConfiguration(builder.Environment);
 
         builder
             .AddLogging()

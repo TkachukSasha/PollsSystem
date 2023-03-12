@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PollsSystem.Shared\PollsSystem.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

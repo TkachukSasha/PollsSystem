@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  postgres:
+    image: postgres
+
+  seq:
+    image: datalust/seq 
+    
+  pollssystem.api:
+    build:
+      context: .
+      dockerfile: src/PollsSystem.Api/Dockerfile

@@ -6,6 +6,7 @@ using PollsSystem.Shared.Default;
 using PollsSystem.Shared.Security.Cryptography;
 using PollsSystem.Shared.Security.Generators;
 using PollsSystem.Shared.Security.Providers;
+using PollsSystem.Shared.Security.Storage;
 using System.Text;
 
 namespace PollsSystem.Shared.Security;
@@ -20,6 +21,7 @@ internal static class Extensions
 
         services.AddScoped<IPasswordManager, PasswordManager>();
         services.AddScoped<IJwtTokenProvider, JwtTokenProvider>();
+        services.AddScoped<IStorage, HttpStorage>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
         services.AddAuthorization()
