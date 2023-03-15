@@ -13,4 +13,11 @@ public class JwtOptions
     public bool ValidateIssuer { get; set; }
 
     public bool ValidateAudience { get; set; }
+
+    public List<Role>? Roles { get; set; }
+}
+
+public class Role
+{
+    public string Name { get; set; } = default!;
 }

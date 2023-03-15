@@ -13,8 +13,8 @@ builder.Services.AddPresentation();
 
 var app = builder.Build();
 
-app.UseShared();
-
 app.UsePresentation();
+
+app.UseShared();
 
 app.Run();

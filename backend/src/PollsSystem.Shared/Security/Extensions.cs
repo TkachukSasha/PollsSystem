@@ -21,10 +21,10 @@ internal static class Extensions
 
         services.AddScoped<IPasswordManager, PasswordManager>();
         services.AddScoped<IJwtTokenProvider, JwtTokenProvider>();
-        services.AddScoped<IStorage, HttpStorage>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddSingleton<IStorage, HttpStorage>();
 
-        services.AddAuthorization()
+        services
             .AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -46,6 +46,13 @@ internal static class Extensions
                     ValidateAudience = true
                 };
             });
+
+        services.AddAuthorization(options =>
+        {
+            if (jwtOptions.Roles.Any())
+                foreach (var role in jwtOptions.Roles)
+                    options.AddPolicy(role.Name, policy => policy.RequireRole(role.Name));
+        });
 
         return services;
     }

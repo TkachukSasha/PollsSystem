@@ -10,7 +10,7 @@ using PollsSystem.Shared.Security.Providers;
 using PollsSystem.Shared.Security.Storage;
 using System.Diagnostics.CodeAnalysis;
 
-namespace PollsSystem.Application.Commands.Users;
+namespace PollsSystem.Application.Commands.Users.Accounts;
 
 public class SignUpValidator : AbstractValidator<SignUp>
 {
@@ -25,16 +25,18 @@ public class SignUpValidator : AbstractValidator<SignUp>
             .NotEmpty();
 
         RuleFor(x => x.UserName)
+            .MinimumLength(8)
             .MaximumLength(16)
             .NotEmpty();
 
         RuleFor(x => x.Password)
+            .MinimumLength(8)
             .MaximumLength(16)
             .NotEmpty();
     }
 }
 
-public sealed record SignUp(string FirstName, string LastName, string UserName, string Password, Guid? RoleGid) : ICommand<Guid>, IValidate
+public sealed record SignUp(string FirstName, string LastName, string UserName, string Password, Guid? RoleGid) : ICommand, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -49,7 +51,7 @@ public sealed record SignUp(string FirstName, string LastName, string UserName, 
     }
 }
 
-public class SignUpHandler : ICommandHandler<SignUp, Guid>
+public class SignUpHandler : ICommandHandler<SignUp>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBaseRepository _baseRepository;
@@ -71,7 +73,7 @@ public class SignUpHandler : ICommandHandler<SignUp, Guid>
         _storage = storage ?? throw new ArgumentNullException(nameof(storage));
     }
 
-    public async ValueTask<Guid> Handle(SignUp command, CancellationToken cancellationToken)
+    public async ValueTask<Unit> Handle(SignUp command, CancellationToken cancellationToken)
     {
         bool? isFirstNameUnique = await _baseRepository.IsFieldUniqueAsync<User>(x => x.FirstName == command.FirstName);
 
@@ -117,6 +119,6 @@ public class SignUpHandler : ICommandHandler<SignUp, Guid>
 
         _storage.Set(authResponse, "auth");
 
-        return user.Gid;
+        return Unit.Value;
     }
 }

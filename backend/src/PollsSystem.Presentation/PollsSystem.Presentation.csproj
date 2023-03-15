@@ -17,6 +17,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PollsSystem.Application\PollsSystem.Application.csproj" />
+    <ProjectReference Include="..\PollsSystem.Shared\PollsSystem.Shared.csproj" />
+    <ProjectReference Include="..\PollsSystem.Utils\PollsSystem.Utils.csproj" />
   </ItemGroup>
 
 </Project>
