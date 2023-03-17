@@ -4,8 +4,8 @@ import { PollsListComponent } from "./pages/polls-list/polls-list.component";
 
 const routes: Routes = [
   {
-      path: "",
-      component: PollsListComponent
+    path: "",
+    component: PollsListComponent
   }
 ];
 

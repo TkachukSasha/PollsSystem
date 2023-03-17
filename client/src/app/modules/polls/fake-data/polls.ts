@@ -1,4 +1,4 @@
-import {IPoll} from "../models/poll";
+import {IPoll} from "../models/poll-model";
 
 export const polls: IPoll[] = [
   {

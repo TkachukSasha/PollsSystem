@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import { IPoll } from "../../models/poll";
+import { Component, Input, OnInit } from '@angular/core';
+import { IPoll } from "../../models/poll-model";
 
 @Component({
   selector: 'app-polls-item',
@@ -9,7 +9,6 @@ import { IPoll } from "../../models/poll";
 export class PollsItemComponent implements OnInit {
 
   @Input() poll: IPoll
-
 
   constructor() { }
 

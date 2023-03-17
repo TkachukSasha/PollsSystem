@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-      path: "",
-      loadChildren: () => import("./modules/polls/polls.module").then(m => m.PollsModule)
+    path: "",
+    loadChildren: () => import("./modules/polls/polls.module").then(m => m.PollsModule)
   }
 ];
 

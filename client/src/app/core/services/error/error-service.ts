@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import { Injectable } from "@angular/core";
 import { UiService } from "../ui/ui-service";
 
 @Injectable({

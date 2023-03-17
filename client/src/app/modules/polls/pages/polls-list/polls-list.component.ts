@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IPoll } from "../../models/poll";
+import { IPoll } from "../../models/poll-model";
 import { polls as data } from "../../fake-data/polls"
 
 @Component({
