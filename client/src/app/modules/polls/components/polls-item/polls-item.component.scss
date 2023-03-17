@@ -1,0 +1,11 @@
+.poll__item-wrapper{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 40px 40px 40px 40px;
+
+  .poll__item-card{
+    background-color: #E5EAD9;
+    padding: 0 20px;
+  }
+}

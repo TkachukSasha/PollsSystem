@@ -7,6 +7,7 @@ using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Dal.Utils;
+using PollsSystem.Utils.Statistics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Polls.External;
@@ -78,11 +79,11 @@ public class SendRepliesHandler : ICommandHandler<SendReplies, Guid>
 
         double finalScore = scores.Sum();
 
-        //var percents = finalScore.SetPercents(existingPoll.NumberOfQuestions);
+        var percents = finalScore.SetPercents(existingPoll.NumberOfQuestions);
 
         var reply = new UserReply(
             finalScore,
-            0,
+            percents,
             command.FirstName,
             command.LastName,
             existingPoll.Gid
