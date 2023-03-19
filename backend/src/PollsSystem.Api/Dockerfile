@@ -1,26 +1,12 @@
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
-EXPOSE 80
-
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
-COPY ["src/PollsSystem.Api/PollsSystem.Api.csproj", "src/PollsSystem.Api/"]
-COPY ["src/PollsSystem.Application/PollsSystem.Application.csproj", "src/PollsSystem.Application/"]
-COPY ["src/PollsSystem.Domain/PollsSystem.Domain.csproj", "src/PollsSystem.Domain/"]
-COPY ["src/PollsSystem.Shared/PollsSystem.Shared.csproj", "src/PollsSystem.Shared/"]
-COPY ["src/PollsSystem.Persistence/PollsSystem.Persistence.csproj", "src/PollsSystem.Persistence/"]
-COPY ["src/PollsSystem.Presentation/PollsSystem.Presentation.csproj", "src/PollsSystem.Presentation/"]
-RUN dotnet restore "src/PollsSystem.Api/PollsSystem.Api.csproj"
 COPY . .
-WORKDIR "/src/src/PollsSystem.Api"
-RUN dotnet build "PollsSystem.Api.csproj" -c Release -o /app/build
 
-FROM build AS publish
-RUN dotnet publish "PollsSystem.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "PollsSystem.Api.csproj" -c release -o out
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/out .
 ENV ASPNETCORE_URLS http://*:80
 ENV ASPNETCORE_ENVIRONMENT Production
-ENTRYPOINT ["dotnet", "PollsSystem.Api.dll"]
+ENTRYPOINT dotnet PollsSystem.Api.dll

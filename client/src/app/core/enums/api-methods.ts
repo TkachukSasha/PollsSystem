@@ -1,4 +1,4 @@
-export enum ApiMethod{
+export enum ApiMethods{
   GET,
   POST,
   PUT,

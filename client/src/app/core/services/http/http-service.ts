@@ -4,7 +4,7 @@ import { ApiMethod } from "../../enums/api-methods";
 import { ErrorService } from "../error/error-service";
 import { throwError } from "rxjs";
 import { catchError } from "rxjs/operators"
-import { environmentDev } from "../../../../environments/environment.dev";
+import { environment } from "../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -27,23 +27,23 @@ export class HttpService{
 
     switch (method) {
       case ApiMethod.GET:
-        response = this.http.get(`${environmentDev.apiUrl}${endpoint}`)
+        response = this.http.get(`${environment.apiUrl}${endpoint}`)
           .pipe(catchError(async (err) => this.handleError(err, this)));
         break;
       case ApiMethod.POST:
-        response = this.http.post(`${environmentDev.apiUrl}${endpoint}`, data, this.httpOptions)
+        response = this.http.post(`${environment.apiUrl}${endpoint}`, data, this.httpOptions)
           .pipe(catchError(async (err) => this.handleError(err, this)));
         break;
       case ApiMethod.PUT:
-        response = this.http.put(`${environmentDev.apiUrl}${endpoint}`, data, this.httpOptions)
+        response = this.http.put(`${environment.apiUrl}${endpoint}`, data, this.httpOptions)
           .pipe(catchError(async (err) => this.handleError(err, this)));
         break;
       case ApiMethod.PATCH:
-        response = this.http.patch(`${environmentDev.apiUrl}${endpoint}`, data, this.httpOptions)
+        response = this.http.patch(`${environment.apiUrl}${endpoint}`, data, this.httpOptions)
           .pipe(catchError(async (err) => this.handleError(err, this)));
         break;
       case ApiMethod.DELETE:
-        response = this.http.delete(`${environmentDev.apiUrl}${endpoint}`, data)
+        response = this.http.delete(`${environment.apiUrl}${endpoint}`, data)
           .pipe(catchError(async (err) => this.handleError(err, this)));
         break;
       default:

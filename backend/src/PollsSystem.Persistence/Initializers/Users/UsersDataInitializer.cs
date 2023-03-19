@@ -26,11 +26,7 @@ public class UsersDataInitializer : IDataInitializer
     {
         if (await _dbContext.Roles.AnyAsync()) return;
 
-        if (await _dbContext.Users.AnyAsync()) return;
-
         await AddRolesAsync();
-
-        await AddUsersAsync();
 
         await _dbContext.SaveChangesAsync();
     }
@@ -42,21 +38,5 @@ public class UsersDataInitializer : IDataInitializer
         await _dbContext.Roles.AddAsync(Role.Init(Role.DefaultRole, true));
 
         _logger.LogInformation("Initialized roles.");
-    }
-
-    private async Task AddUsersAsync()
-    {
-        var role = await _dbContext.Roles.FirstOrDefaultAsync(x => x.Name == Role.Admin);
-
-        await _dbContext.Users.AddAsync(User.Init("Admin",
-                                                  "Admin",
-                                                  "Admin",
-                                                  _passwordManager.Secure("Password1"),
-                                                  role,
-                                                  true,
-                                                  true,
-                                                  true));
-
-        _logger.LogInformation("Initialized users.");
     }
 }

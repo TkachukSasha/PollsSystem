@@ -1,10 +1,13 @@
-version: '3.4'
+version: "3.7"
 
 services:
   postgres:
+    image: postgres
     shm_size: '4gb'
     container_name: postgres
     restart: unless-stopped
+    networks:
+      - polls-system
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
@@ -13,19 +16,22 @@ services:
       - postgres:/var/lib/postgresql/data
 
   seq:
+    image: datalust/seq 
     container_name: seq
     restart: unless-stopped
     environment:
       - ACCEPT_EULA=Y
+    networks:
+      - polls-system
     ports:
       - 5341:80
 
-  pollssystem.api:
-    container_name: polls-system-api
-    restart: unless-stopped
-    ports:
-      - "6000:80"
+networks:
+  polls-system:
+    name: polls-system
 
 volumes:
   postgres:
+    driver: local
+  seq:
     driver: local

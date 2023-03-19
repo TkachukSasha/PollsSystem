@@ -13,7 +13,7 @@ public class CreatePollValidator : AbstractValidator<CreatePoll>
     public CreatePollValidator()
     {
         RuleFor(x => x.Title)
-            .MinimumLength(10)
+            .MinimumLength(8)
             .MaximumLength(256)
             .NotNull();
 
