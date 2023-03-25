@@ -4,6 +4,6 @@ public record ChangeResultScoreRequest(Guid PollGid, string LastName, double Sco
 
 public record DeleteResultRequest(Guid PollGid, Guid ResultGid);
 
-public record GetResultsQuery(Guid PollGid, PaginationData Data);
+public record GetResultsQuery(Guid PollGid);
 
-public record GetResultsByLastNameQuery(Guid PollGid, string LastName, PaginationData Data);
+public record GetResultsByLastNameQuery(Guid PollGid, string LastName);

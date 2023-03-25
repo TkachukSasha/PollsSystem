@@ -1,0 +1,35 @@
+.footer{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #E5EAD9;
+
+  .container{
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  &__content{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    font-size: 12px;
+
+    &-title{
+      font-weight: bold;
+      font-size: 12px;
+      margin-left: 20px;
+    }
+
+    &-description{
+      font-weight: bold;
+      margin-top: 5px;
+      margin-right: 20px;
+    }
+
+    &-sub{
+      font-weight: lighter;
+    }
+  }
+}

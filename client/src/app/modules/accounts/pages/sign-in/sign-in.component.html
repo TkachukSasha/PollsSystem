@@ -1,0 +1,29 @@
+<div class="sign-in__container">
+  <form class="sign-in__form" [formGroup]="signInForm" (ngSubmit)="handleLogin()">
+    <div class="sign-in__content">
+      <h1 class="sign-in__title">Sign-In</h1>
+      <div class="sign-in__input-wrap">
+        <input class="sign-in-input" placeholder="Username" formControlName="userName"/>
+      </div>
+      <div class="sign-in__input-wrap">
+        <input class="sign-in-input" placeholder="Password" type="password" formControlName="password"/>
+      </div>
+      <div class="sign-in__handle-submit">
+        <button class="sign-in__submit-button" type="submit">Sign In</button>
+        <div class="sign-in__handle-information">
+          <span class="sign-in__information-text">Don't have an account yet?</span>
+          <a class="sign-in__ref" routerLink="sign-up">Sign-Up</a>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<ngx-spinner
+  bdColor = "rgba(0, 0, 0, 0.8)"
+  size = "medium"
+  color = "#fff"
+  type = "square-jelly-box"
+  [fullScreen] = "true"
+><p style="color: white" > Loading... </p>
+</ngx-spinner>

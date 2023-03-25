@@ -1,0 +1,21 @@
+<div class="account__settings-wrapper">
+  <h1 class="account__settings-main">Choose option</h1>
+  <div class="account__settins-content" (click)="onEditUserNameClick()">
+    <h2 class="account__settins-title">Edit Username</h2>
+  </div>
+
+  <div class="account__settins-content" (click)="onEditPasswordNameClick()">
+      <h2 class="account__settins-title">Edit Password</h2>
+  </div>
+</div>
+
+
+<app-edit-username-popup
+  *ngIf="isEditUserNameShow"
+>
+</app-edit-username-popup>
+
+<app-edit-password-popup
+  *ngIf="isEditPasswordShow"
+>
+</app-edit-password-popup>

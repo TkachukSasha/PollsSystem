@@ -1,0 +1,38 @@
+.account__settings-wrapper{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+
+  max-width: 80%;
+
+  background: #E5EAD9;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+
+  .account__settings-main{
+    font-size: 24px;
+    font-weight: bolder;
+    text-align: center;
+  }
+
+  .account__settins-content {
+    border: 2px solid #2D2F2C;
+    border-radius: 10px;
+    background-color: #E5EAD9;
+    margin-bottom: 20px;
+
+    &:focus {
+      border: 10px solid #F8C64C;
+    }
+
+    .account__settins-title{
+      padding-top: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+    }
+  }
+}

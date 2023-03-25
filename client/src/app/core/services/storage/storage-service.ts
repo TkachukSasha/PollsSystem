@@ -9,7 +9,7 @@ export class StorageService {
   }
 
   getData(key: string){
-    localStorage.getItem(key)
+    return localStorage.getItem(key)
   }
 
   clearData(key: string){

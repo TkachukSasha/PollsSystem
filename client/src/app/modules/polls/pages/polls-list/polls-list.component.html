@@ -1,6 +1,23 @@
-<div class="polls__list">
+<ngx-spinner
+  bdColor = "rgba(0, 0, 0, 0.8)"
+  size = "medium"
+  color = "#fff"
+  type = "square-jelly-box"
+  [fullScreen] = "true"
+><p style="color: white" > Loading... </p>
+</ngx-spinner>
+
+<app-search-bar (searchTextChanged)="onSearchTextEntered($event)"></app-search-bar>
+
+<div class="polls__list" *ngIf="polls$ | async as polls">
   <app-polls-item
-    *ngFor="let poll of polls"
+    (pollSelected)="onPollSelected($event)"
+    *ngFor="let poll of polls | filterPolls: searchText"
     [poll]="poll">
   </app-polls-item>
 </div>
+
+<app-poll-item-popup
+  *ngIf="isPollItemPopupShowed"
+  [poll]="poll"
+></app-poll-item-popup>

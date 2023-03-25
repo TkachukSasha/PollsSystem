@@ -41,7 +41,7 @@ public class PaginationResponse<TEntity>
     public int TotalItems { get; set; }
     public int TotalPages { get; set; }
 
-    public IReadOnlyCollection<TEntity>? Items { get; set; }
+    public List<TEntity>? Items { get; set; }
     public bool Succeeded { get; set; }
 }
 

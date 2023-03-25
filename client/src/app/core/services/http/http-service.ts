@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
-import { ApiMethod } from "../../enums/api-methods";
 import { ErrorService } from "../error/error-service";
-import { throwError } from "rxjs";
+import {Observable, throwError} from "rxjs";
 import { catchError } from "rxjs/operators"
 import { environment } from "../../../../environments/environment";
+import { ApiMethod } from "../../enums/api-methods";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,7 @@ export class HttpService{
   ) {
   }
 
-  requestCall(endpoint: string, method: ApiMethod, data?: any){
+  requestCall(endpoint: string, method: ApiMethod, data?: any) : Observable<any>{
     let response;
 
     switch (method) {
@@ -50,6 +50,7 @@ export class HttpService{
         break;
     }
 
+    // @ts-ignore
     return response;
   }
 

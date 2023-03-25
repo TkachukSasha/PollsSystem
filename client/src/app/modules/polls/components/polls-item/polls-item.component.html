@@ -1,8 +1,9 @@
 <div class="poll__item-wrapper">
-  <div class="poll__item-card">
-    <h1>{{poll.Name}}</h1>
-    <p>{{poll.Description}}</p>
-    <p>{{poll.NumberOfQuestions}}</p>
-    <p>{{poll.Duration}}</p>
+  <div class="poll__item-card" (click)="onCardClick()">
+    <h1 class="poll__item-title">{{poll.title}}</h1>
+    <div class="poll__item-content">
+      <span class="poll__item-numberOfQuestions">Question: {{poll.numberOfQuestions}}</span>
+      <span class="poll__item-duration">Duration: {{poll.duration}} min</span>
+    </div>
   </div>
 </div>

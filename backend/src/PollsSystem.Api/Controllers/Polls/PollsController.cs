@@ -4,10 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using PollsSystem.Application.Queries.Polls.Holders;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Domain.Repositories;
-using PollsSystem.Presentation;
 using PollsSystem.Presentation.Polls.Holders.Requests;
 using PollsSystem.Presentation.Polls.PollsManagement;
-using PollsSystem.Shared.Dal.Pagination;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Utils.Algorithms;
 
@@ -30,18 +28,16 @@ public class PollsController : BaseController
         _questionRepository = questionRepository ?? throw new ArgumentNullException(nameof(questionRepository));
     }
 
-    [AllowAnonymous]
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async ValueTask<IActionResult> GetPolls([FromQuery] PaginationData pagination)
+    public async ValueTask<IActionResult> GetPolls()
     {
-        var filter = new PaginationFilter(pagination.PageNumber, pagination.PageSize);
+        var polls = await _repository.GetListAsync<Poll>();
 
-        var polls = await _repository.GetListAsync<Poll>(filter);
+        var response = polls.Select(x => x?.ToPollResponse()).ToList();
 
-        polls?.Items?.Select(x => x.ToPollResponse());
-
-        return Ok(polls);
+        return response is null ? NoContent() : Ok(response);
     }
 
     [HttpGet("scores")]
@@ -51,26 +47,6 @@ public class PollsController : BaseController
         var scores = await _repository.GetListAsync<Score>();
 
         return Ok(scores);
-    }
-
-    [AllowAnonymous]
-    [HttpGet("poll")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async ValueTask<IActionResult> GetPoll([FromQuery] GetPollQuery query)
-    {
-        var poll = await _repository.GetByConditionAsync<Poll>(x => x.Gid == query.PollGid);
-
-        return Ok(poll);
-    }
-
-    [AllowAnonymous]
-    [HttpGet("by-title")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async ValueTask<IActionResult> GetPoll([FromQuery] GetPollByTitleQuery query)
-    {
-        var poll = await _repository.GetByConditionAsync<Poll>(x => x.Title == query.Title);
-
-        return Ok(poll);
     }
 
     [HttpGet("key")]

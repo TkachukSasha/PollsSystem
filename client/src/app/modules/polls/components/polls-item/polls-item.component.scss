@@ -7,5 +7,39 @@
   .poll__item-card{
     background-color: #E5EAD9;
     padding: 0 20px;
+    margin-bottom: 20px;
+
+    &:focus{
+      border: 10px solid #F8C64C;
+    }
+  }
+
+  .poll__item-title{
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .poll__item-content{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .poll__item-numberOfQuestions{
+    font-size: 16px;
+    font-weight: bold;
+    padding-right: 20px;
+  }
+
+  .poll__item-duration{
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .poll__item-submit{
+    width: 100%;
   }
 }

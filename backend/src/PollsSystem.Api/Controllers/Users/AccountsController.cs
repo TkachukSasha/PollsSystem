@@ -36,8 +36,8 @@ public class AccountsController : BaseController
         return data is null ? NoContent() : Ok(data);
     }
 
+    [AllowAnonymous]
     [HttpPost("sign-in")]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async ValueTask<IActionResult> SignIn([FromBody] SignInRequest request, CancellationToken cancellationToken)
     {
@@ -50,8 +50,8 @@ public class AccountsController : BaseController
         return data is null ? NoContent() : Ok(data);
     }
 
+    [AllowAnonymous]
     [HttpPatch("revoke-token")]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async ValueTask<IActionResult> Revoke([FromBody] RevokeTokenRequest request, CancellationToken cancellationToken)
     {
@@ -62,6 +62,16 @@ public class AccountsController : BaseController
         var data = _storage.Get<AuthResponse>("auth");
 
         return data is null ? NoContent() : Ok(data);
+    }
+
+    [HttpPatch("validate-password")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async ValueTask<IActionResult> ValidatePassword([FromBody] ValidatePasswordRequest request, CancellationToken cancellationToken)
+    {
+        ValidatePassword command = request.Adapt<ValidatePassword>();
+
+        return Ok(await _mediator.Send(command, cancellationToken));
     }
 
     [HttpPatch("change-password")]

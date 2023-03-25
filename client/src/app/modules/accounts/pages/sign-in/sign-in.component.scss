@@ -1,0 +1,82 @@
+.sign-in__container{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  height: 600px;
+  width: 800px;
+
+  background: #E5EAD9;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+
+  @media (max-width: 820px) {
+    width: 600px;
+  }
+
+  @media (max-width: 623px) {
+    width: 400px;
+  }
+
+  @media (max-width: 426px) {
+    width: 350px;
+  }
+}
+
+.sign-in__form {
+  display: flex;
+  justify-content: center;
+
+  .sign-in__title {
+    margin-top: 120px;
+    margin-bottom: 60px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .sign-in__input-wrap {
+    margin-bottom: 60px;
+    padding: 5px 7px;
+    gap: 17px;
+    border: 1px solid #d5d5d6;
+    border-radius: 8px;
+
+    .sign-in-input {
+      flex-grow: 1;
+      border: none;
+      outline: none;
+      box-shadow: inset 0 0 0 50px #E5EAD9;
+    }
+  }
+
+  .sign-in__handle-submit {
+    .sign-in__submit-button {
+      width: 100%;
+      background-color: #2D2F2C;
+      color: #FFFFFF;
+      text-align: center;
+      border: none;
+      border-radius: 8px;
+      font-weight: 400;
+      padding: 12px;
+      margin-bottom: 30px;
+    }
+
+    .sign-in__handle-information{
+      .sign-in__information-text{
+        color: #707070;
+        font-weight: 400;
+      }
+
+      .sign-in__ref{
+        color: #4DBCFD;
+        font-weight: 600;
+        margin-left: 24px;
+        text-decoration: none;
+      }
+    }
+  }
+}

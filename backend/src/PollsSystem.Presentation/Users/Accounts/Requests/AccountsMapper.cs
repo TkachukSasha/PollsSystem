@@ -16,6 +16,9 @@ public class AccountsMapper : IRegister
         config.NewConfig<RevokeTokenRequest, RevokeToken>()
             .RequireDestinationMemberSource(true);
 
+        config.NewConfig<ValidatePasswordRequest, ValidatePassword>()
+            .RequireDestinationMemberSource(true);
+
         config.NewConfig<ChangeUserNameRequest, ChangeUserName>()
             .RequireDestinationMemberSource(true);
 

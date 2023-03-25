@@ -1,0 +1,20 @@
+<div class="edit__username-wrapper">
+  <a class="edit__username-back" href="/accounts-settings">
+    <mat-icon>arrow_back</mat-icon>
+  </a>
+  <div class="current__username-content">
+    <label class="current__username-label">Your Current Username:</label>
+    <div class="current__username-wrap">
+      <input class="current__username-input" type="text" placeholder={{currentUserName}}>
+    </div>
+  </div>
+
+  <div class="edit__username-content">
+    <label class="edit__username-label">Enter New Username:</label>
+    <div class="edit__username-wrap">
+      <input class="edit__username-input" type="text" placeholder="Enter New UserName" [(ngModel)]="userName">
+    </div>
+  </div>
+
+  <button class="edit__username-button" type="submit" (click)="onUserNameUpdate()">Update</button>
+</div>

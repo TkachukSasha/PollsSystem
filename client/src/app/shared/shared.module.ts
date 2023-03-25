@@ -2,17 +2,27 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatIconModule } from "@angular/material/icon";
+import { FormsModule } from "@angular/forms";
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
   declarations: [
-    NavBarComponent
+    NavBarComponent,
+    SearchBarComponent,
+    FooterComponent
   ],
   exports: [
-    NavBarComponent
+    NavBarComponent,
+    SearchBarComponent,
+    FooterComponent
   ],
   imports: [
     CommonModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatIconModule,
+    FormsModule
   ]
 })
 export class SharedModule { }

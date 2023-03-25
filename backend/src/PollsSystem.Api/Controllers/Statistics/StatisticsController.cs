@@ -7,7 +7,6 @@ using PollsSystem.Application.Queries.Statistics.Results;
 using PollsSystem.Domain.Entities.Statistics;
 using PollsSystem.Presentation.Statistics.Results;
 using PollsSystem.Presentation.Statistics.Results.Requests;
-using PollsSystem.Shared.Dal.Pagination;
 using PollsSystem.Shared.Dal.Repositories;
 
 namespace PollsSystem.Api.Controllers.Statistics;
@@ -41,15 +40,11 @@ public class StatisticsController : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async ValueTask<IActionResult> GetResults([FromQuery] GetResultsQuery query)
     {
-        var paginationFilter = new PaginationFilter(query.Data.PageNumber, query.Data.PageSize);
+        var results = await _repository.GetEntitiesByConditionAsync<Result>(x => x.PollGid == query.PollGid);
 
-        var results = await _repository.GetEntitiesByConditionAsync<Result>(x => x.PollGid == query.PollGid, paginationFilter);
+        var response = results?.Select(x => x?.ToResultResponse());
 
-        results?.Items?.OrderBy(x => x.Percents);
-
-        results?.Items?.Select(x => x.ToResultResponse());
-
-        return results is null ? NoContent() : Ok(results);
+        return results is null ? NoContent() : Ok(response?.OrderBy(x => x?.Percents));
     }
 
     [HttpGet("result")]
@@ -57,8 +52,6 @@ public class StatisticsController : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async ValueTask<IActionResult> GetResult([FromQuery] GetResultsByLastNameQuery query)
     {
-        var paginationFilter = new PaginationFilter(query.Data.PageNumber, query.Data.PageSize);
-
         var result = await _repository.GetByConditionAsync<Result>(x => x.PollGid == query.PollGid && x.LastName == query.LastName);
 
         result.ToResultResponse();

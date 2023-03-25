@@ -35,7 +35,7 @@ public class CreatePollValidator : AbstractValidator<CreatePoll>
     }
 }
 
-public sealed record CreatePoll(string Title, string Description, int NumberOfQuestions, int Duration, Guid AuthorGid) : ICommand<Guid>, IValidate
+public sealed record CreatePoll(string Title, string Description, int NumberOfQuestions, int Duration, Guid AuthorGid) : ICommand<string>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -50,7 +50,7 @@ public sealed record CreatePoll(string Title, string Description, int NumberOfQu
     }
 }
 
-public class CreatePollHandler : ICommandHandler<CreatePoll, Guid>
+public class CreatePollHandler : ICommandHandler<CreatePoll, string>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBaseRepository _baseRepository;
@@ -63,7 +63,7 @@ public class CreatePollHandler : ICommandHandler<CreatePoll, Guid>
         _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
     }
 
-    public async ValueTask<Guid> Handle(CreatePoll command, CancellationToken cancellationToken)
+    public async ValueTask<string> Handle(CreatePoll command, CancellationToken cancellationToken)
     {
         var isTitleUnique = await _baseRepository.IsFieldUniqueAsync<Poll>(x => x.Title == command.Title);
 
@@ -83,6 +83,6 @@ public class CreatePollHandler : ICommandHandler<CreatePoll, Guid>
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return poll.Gid;
+        return poll.Key;
     }
 }

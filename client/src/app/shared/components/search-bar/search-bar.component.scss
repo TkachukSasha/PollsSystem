@@ -1,0 +1,29 @@
+.search__bar-wrapper{
+  display: flex;
+  margin-left: 40px;
+  margin-right: 50px;
+}
+
+.search__bar{
+  display: flex;
+  width: 100%;
+  border: 2px solid #E5EAD9;
+  margin-bottom: 30px;
+
+  &-input{
+    background-color: #E5EAD9;
+    border: none;
+    flex-grow: 1;
+
+    &:focus{
+      outline: none;
+      border: none;
+    }
+  }
+
+  &-icon{
+    height: 100%;
+    padding-top: 4px;
+    background-color: #E5EAD9;
+  }
+}

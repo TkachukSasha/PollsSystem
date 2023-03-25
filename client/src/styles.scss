@@ -24,3 +24,27 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   font-size: 16px;
 }
+
+input{
+  height: 30px;
+  width: 100%;
+  outline: none;
+  border: none;
+  padding: 0 60px 0 20px;
+  font-size: 18px;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+}
