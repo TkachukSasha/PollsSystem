@@ -1,0 +1,13 @@
+.thanksgiving__container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+
+  .thanksgiving__title{
+    font-size: 36px;
+    color: #E5EAD9;
+    font-weight: bolder;
+    text-align: center;
+  }
+}

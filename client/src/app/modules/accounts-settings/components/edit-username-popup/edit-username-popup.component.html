@@ -5,7 +5,7 @@
   <div class="current__username-content">
     <label class="current__username-label">Your Current Username:</label>
     <div class="current__username-wrap">
-      <input class="current__username-input" type="text" placeholder={{currentUserName}}>
+      <input class="current__username-input" type="text" [(ngModel)]="currentUserName" [disabled]="isDisabled">
     </div>
   </div>
 

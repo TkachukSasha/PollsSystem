@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PollsSystem.Application.Queries.Polls.Holders;
+using PollsSystem.Application.Responses.Polls;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Domain.Repositories;
 using PollsSystem.Presentation.Polls.Holders.Requests;
@@ -40,6 +41,20 @@ public class PollsController : BaseController
         return response is null ? NoContent() : Ok(response);
     }
 
+    [HttpGet("user-polls")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async ValueTask<IActionResult> GetUserPolls([FromQuery] GetUserPollsQuery query)
+    {
+        var userGid = Guid.Parse(query.UserGid);
+
+        var polls = await _repository.GetEntitiesByConditionAsync<Poll>(x => x.AuthorGid == userGid);
+
+        var response = polls.Select(x => x?.ToPollResponse()).ToList();
+
+        return response is null ? NoContent() : Ok(response);
+    }
+
     [HttpGet("scores")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async ValueTask<IActionResult> GetScores()
@@ -54,7 +69,9 @@ public class PollsController : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async ValueTask<IActionResult> GetPollKey([FromQuery] GetPollQuery query)
     {
-        var poll = await _repository.GetByConditionAsync<Poll>(x => x.Gid == query.PollGid);
+        var pollGid = Guid.Parse(query.PollGid);
+
+        var poll = await _repository.GetByConditionAsync<Poll>(x => x.Gid == pollGid);
 
         return Ok(poll);
     }
@@ -70,12 +87,25 @@ public class PollsController : BaseController
     [HttpGet("questions")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async ValueTask<IActionResult> CheckPollQuestions([FromQuery] GetPollQuery query)
+    public async ValueTask<IActionResult> GetPollQuestions([FromQuery] GetPollQuery query)
     {
-        var questions = await _questionRepository.GetPollQuestionsWithAnswersAsync(query.PollGid);
+        var pollGid = Guid.Parse(query.PollGid);
+
+        var questions = await _questionRepository.GetPollQuestionsWithAnswersAsync(pollGid);
 
         questions.ToList().ShuffleQuizQuestionsV1();
 
-        return Ok(questions);
+        var responseList = new List<QuestionsWithAnswersResponse>();
+
+        List<Question> questionsList = questions.ToList();
+        List<Answer> answers = questionsList.SelectMany(q => q.Answers).ToList();
+
+        foreach (var question in questionsList)
+        {
+            var questionAnswers = answers.Where(a => a.QuestionGid == question.Gid).ToList();
+            responseList.Add(question.ToQuestionsWithAnswersResponse(questionAnswers));
+        }
+
+        return Ok(responseList);
     }
 }

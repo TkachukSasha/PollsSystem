@@ -1,28 +1,30 @@
 ﻿namespace PollsSystem.Presentation.Polls.Holders.Requests;
 
-public record ChangeAnswerScoreRequest(Guid QuestionGid, Guid AnswerGid, Guid ScoreGid);
+public record ChangeAnswerScoreRequest(string QuestionGid, string AnswerGid, string ScoreGid);
 
-public record ChangeAnswerTextRequest(Guid QuestionGid, Guid AnswerGid, string Text);
+public record ChangeAnswerTextRequest(string QuestionGid, string AnswerGid, string Text);
 
-public record ChangePollDescriptionRequest(Guid PollGid, string Description);
+public record ChangePollDescriptionRequest(string PollGid, string Description);
 
-public record ChangePollDurationRequest(Guid PollGid, int Duration);
+public record ChangePollDurationRequest(string PollGid, int Duration);
 
-public record ChangePollKeyRequest(Guid PollGid, string CurrentKey);
+public record ChangePollKeyRequest(string PollGid, string CurrentKey);
 
-public record ChangePollTitleRequest(Guid PollGid, string CurrentTitle, string Title);
+public record ChangePollTitleRequest(string PollGid, string CurrentTitle, string Title);
 
 public record ChangeQuestionTextRequest(string CurrentQuestion, string Question);
 
-public record CreatePollRequest(string Title, string Description, int NumberOfQuestions, int Duration, Guid AuthorGid);
+public record CreatePollRequest(string Title, string Description, int NumberOfQuestions, int Duration, string AuthorGid);
 
-public record CreatePollQuestionsRequest(Guid PollGid, List<QuestionDto> Questions);
+public record CreatePollQuestionsRequest(string PollGid, List<QuestionDto> Questions);
 
-public record DeletePollRequest(Guid PollGid);
+public record DeletePollRequest(string PollGid);
 
-public record DeletePollQuestionRequest(Guid PollGid, Guid QuestionGid);
+public record DeletePollQuestionRequest(string PollGid, string QuestionGid);
 
-public record GetPollQuery(Guid PollGid);
+public record GetPollQuery(string PollGid);
+
+public record GetUserPollsQuery(string UserGid);
 
 public record GetPollByTitleQuery(string Title);
 

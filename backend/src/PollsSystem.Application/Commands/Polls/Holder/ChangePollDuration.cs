@@ -22,7 +22,7 @@ public class ChangePollDurationValidator : AbstractValidator<ChangePollDuration>
     }
 }
 
-public sealed record ChangePollDuration(Guid PollGid, int Duration) : ICommand<Guid>, IValidate
+public sealed record ChangePollDuration(string PollGid, int Duration) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -52,7 +52,7 @@ public class ChangePollDurationHandler : ICommandHandler<ChangePollDuration, Gui
 
     public async ValueTask<Guid> Handle(ChangePollDuration command, CancellationToken cancellationToken)
     {
-        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == command.PollGid);
+        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == Guid.Parse(command.PollGid));
 
         if (existingPoll is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,

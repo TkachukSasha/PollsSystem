@@ -5,6 +5,7 @@ import { ApiMethod } from "../../../core/enums/api-methods";
 import { ValidatePassword } from "../models/validate-password";
 import { ChangePassword } from "../models/change-password";
 import { ChangeUsername } from "../models/change-username";
+import {DeleteAccount} from "../models/delete-account";
 
 @Injectable({
   providedIn: 'root'
@@ -15,21 +16,21 @@ export class AccountSettingsService {
     private _http: HttpService
   ) { }
 
-  getUserName() : Observable<string>{
+  getUserName(userGid: string) : Observable<any>{
     // @ts-ignore
-    return this._http.requestCall<string>('/accounts/username', ApiMethod.GET)
+    return this._http.requestCall<any>(`/accounts/username?UserGid=${userGid}`, ApiMethod.GET)
       .pipe(
-        map((data: string) => {
+        map((data: any) => {
           return data;
         })
       )
   }
 
-  changeUserName(payload: ChangeUsername) : Observable<any>{
+  changeUserName(payload: ChangeUsername) : Observable<boolean>{
     let request = JSON.stringify(payload);
 
     // @ts-ignore
-    return this._http.requestCall<any>('/accounts/change-username', ApiMethod.POST, request)
+    return this._http.requestCall<any>('/accounts/change-username', ApiMethod.PATCH, request)
       .pipe(
         map((data: any) => {
           return data;
@@ -41,7 +42,7 @@ export class AccountSettingsService {
     let request = JSON.stringify(payload);
 
     // @ts-ignore
-    return this._http.requestCall<boolean>('/accounts/validate-password', ApiMethod.POST, request)
+    return this._http.requestCall<boolean>('/accounts/validate-password', ApiMethod.PATCH, request)
       .pipe(
         map((data: boolean) => {
           return data;
@@ -49,11 +50,23 @@ export class AccountSettingsService {
       )
   }
 
-  changePassword(payload: ChangePassword) : Observable<any>{
+  changePassword(payload: ChangePassword) : Observable<boolean>{
     let request = JSON.stringify(payload);
 
     // @ts-ignore
-    return this._http.requestCall<any>('/accounts/change-password', ApiMethod.POST, request)
+    return this._http.requestCall<any>('/accounts/change-password', ApiMethod.PATCH, request)
+      .pipe(
+        map((data: any) => {
+          return data;
+        })
+      )
+  }
+
+  deleteAccount(payload: DeleteAccount) : Observable<boolean>{
+    let request = JSON.stringify(payload);
+
+    // @ts-ignore
+    return this._http.requestCall<any>('/accounts/delete', ApiMethod.DELETE, request)
       .pipe(
         map((data: any) => {
           return data;

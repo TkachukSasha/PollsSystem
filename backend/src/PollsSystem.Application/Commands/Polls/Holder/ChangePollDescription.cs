@@ -23,7 +23,7 @@ public class ChangePollDescriptionValidator : AbstractValidator<ChangePollDescri
     }
 }
 
-public sealed record ChangePollDescription(Guid PollGid, string Description) : ICommand<Guid>, IValidate
+public sealed record ChangePollDescription(string PollGid, string Description) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -55,7 +55,7 @@ public class ChangePollDescriptionHandler : ICommandHandler<ChangePollDescriptio
     {
         var isDesciptionUnique = await _baseRepository.IsFieldUniqueAsync<Poll>(x => x.Description == command.Description);
 
-        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == command.PollGid);
+        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == Guid.Parse(command.PollGid));
 
         if (existingPoll is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,

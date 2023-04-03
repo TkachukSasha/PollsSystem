@@ -1,0 +1,30 @@
+:host{
+  display: flex;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.time__over-wrapper{
+  width: 30%;
+  box-shadow: 5px 5px 6px #ccc;
+  border-radius: 5px;
+  background-color: #E5EAD9;
+}
+
+.time__over-back{
+  position: absolute;
+  padding: 10px;
+}
+
+.time__over-title{
+  margin-top: 50%;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}

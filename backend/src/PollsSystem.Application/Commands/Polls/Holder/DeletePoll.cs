@@ -18,7 +18,7 @@ public class DeletePollValidator : AbstractValidator<DeletePoll>
     }
 }
 
-public sealed record DeletePoll(Guid PollGid) : ICommand<Guid>, IValidate
+public sealed record DeletePoll(string PollGid) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -58,13 +58,13 @@ public class DeletePollHandler : ICommandHandler<DeletePoll, Guid>
     {
         List<Answer> answers = new();
 
-        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == command.PollGid);
+        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == Guid.Parse(command.PollGid));
 
         if (existingPoll is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
                 $"Poll with: {command.PollGid} is null!");
 
-        var questions = await _baseRepository.GetEntitiesByConditionAsync<Question>(x => x.PollGid == command.PollGid);
+        var questions = await _baseRepository.GetEntitiesByConditionAsync<Question>(x => x.PollGid == Guid.Parse(command.PollGid));
 
         if (questions.Any())
         {

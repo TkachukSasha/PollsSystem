@@ -1,10 +1,19 @@
 <div class="poll__item-wrapper">
+  <a class="poll__item-back" href="/polls">
+    <mat-icon>arrow_back</mat-icon>
+  </a>
     <h1 class="poll__item-header">{{poll.title}}</h1>
+    <hr>
     <section class="poll__item-content">
       <article class="poll__item-description">{{poll.description}}</article>
       <div class="poll__item-additional">
         <span class="poll__item-numberOfQuestions">Question: {{poll.numberOfQuestions}}</span>
         <span class="poll__item-duration">Duration: {{poll.duration}} min</span>
       </div>
+      <h3 class="poll__item-invite">You want to go through?</h3>
+      <div class="poll__item__input-wrap">
+        <input class="poll__item-input" placeholder="Enter Poll Key" type="text" [(ngModel)]="pollKey"/>
+      </div>
+      <button class="poll__item__goto" type="submit" (click)="onPollSubmit()">Submit</button>
     </section>
 </div>

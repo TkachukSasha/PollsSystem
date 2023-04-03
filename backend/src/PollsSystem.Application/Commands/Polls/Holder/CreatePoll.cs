@@ -35,7 +35,7 @@ public class CreatePollValidator : AbstractValidator<CreatePoll>
     }
 }
 
-public sealed record CreatePoll(string Title, string Description, int NumberOfQuestions, int Duration, Guid AuthorGid) : ICommand<string>, IValidate
+public sealed record CreatePoll(string Title, string Description, int NumberOfQuestions, int Duration, string AuthorGid) : ICommand<string>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -75,7 +75,7 @@ public class CreatePollHandler : ICommandHandler<CreatePoll, string>
              command.NumberOfQuestions,
              command.Duration,
              key,
-             command.AuthorGid,
+             Guid.Parse(command.AuthorGid),
              isTitleUnique.GetValueOrDefault()
         );
 

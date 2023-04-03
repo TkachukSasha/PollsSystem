@@ -24,7 +24,7 @@ public class ChangeAnswerScoreValidator : AbstractValidator<ChangeAnswerScore>
     }
 }
 
-public sealed record ChangeAnswerScore(Guid QuestionGid, Guid AnswerGid, Guid ScoreGid) : ICommand<Guid>, IValidate
+public sealed record ChangeAnswerScore(string QuestionGid, string AnswerGid, string ScoreGid) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -54,13 +54,13 @@ public class ChangeAnswerScoreHandler : ICommandHandler<ChangeAnswerScore, Guid>
 
     public async ValueTask<Guid> Handle(ChangeAnswerScore command, CancellationToken cancellationToken)
     {
-        var existingQuestion = await _baseRepository.GetByConditionAsync<Question>(x => x.Gid == command.QuestionGid);
+        var existingQuestion = await _baseRepository.GetByConditionAsync<Question>(x => x.Gid == Guid.Parse(command.QuestionGid));
 
         if (existingQuestion is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
                 $"Question with: {command.QuestionGid} is null!");
 
-        var existingAnswer = await _baseRepository.GetByConditionAsync<Answer>(x => x.QuestionGid == command.QuestionGid && x.Gid == command.AnswerGid);
+        var existingAnswer = await _baseRepository.GetByConditionAsync<Answer>(x => x.QuestionGid == Guid.Parse(command.QuestionGid) && x.Gid == Guid.Parse(command.AnswerGid));
 
         if (existingAnswer is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
@@ -68,7 +68,7 @@ public class ChangeAnswerScoreHandler : ICommandHandler<ChangeAnswerScore, Guid>
 
         var answer = Answer.ChangeAnswerScore(
                existingAnswer,
-               command.ScoreGid
+               Guid.Parse(command.ScoreGid)
         );
 
         _baseRepository.Update(answer);

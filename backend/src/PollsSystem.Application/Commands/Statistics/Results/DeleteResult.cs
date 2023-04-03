@@ -21,7 +21,7 @@ public class DeleteResultValidator : AbstractValidator<DeleteResult>
     }
 }
 
-public sealed record DeleteResult(Guid PollGid, Guid ResultGid) : ICommand<Guid>, IValidate
+public sealed record DeleteResult(string PollGid, string ResultGid) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -51,7 +51,7 @@ public class DeleteResultHandler : ICommandHandler<DeleteResult, Guid>
 
     public async ValueTask<Guid> Handle(DeleteResult command, CancellationToken cancellationToken)
     {
-        var existingResult = await _baseRepository.GetByConditionAsync<Result>(x => x.Gid == command.ResultGid && x.PollGid == command.PollGid);
+        var existingResult = await _baseRepository.GetByConditionAsync<Result>(x => x.Gid == Guid.Parse(command.ResultGid) && x.PollGid == Guid.Parse(command.PollGid));
 
         if (existingResult is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,

@@ -23,7 +23,7 @@ public class ChangeUserNameValidator : AbstractValidator<ChangeUserName>
     }
 }
 
-public sealed record ChangeUserName(string CurrentUserName, string UserName) : ICommand<Guid>, IValidate
+public sealed record ChangeUserName(string CurrentUserName, string UserName) : ICommand<bool>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -38,7 +38,7 @@ public sealed record ChangeUserName(string CurrentUserName, string UserName) : I
     }
 }
 
-public class ChangeUserNameHandler : ICommandHandler<ChangeUserName, Guid>
+public class ChangeUserNameHandler : ICommandHandler<ChangeUserName, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBaseRepository _baseRepository;
@@ -51,7 +51,7 @@ public class ChangeUserNameHandler : ICommandHandler<ChangeUserName, Guid>
         _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
     }
 
-    public async ValueTask<Guid> Handle(ChangeUserName command, CancellationToken cancellationToken)
+    public async ValueTask<bool> Handle(ChangeUserName command, CancellationToken cancellationToken)
     {
         var existingUser = await _baseRepository.GetByConditionAsync<User>(x => x.UserName == command.CurrentUserName);
 
@@ -70,6 +70,6 @@ public class ChangeUserNameHandler : ICommandHandler<ChangeUserName, Guid>
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return user.Gid;
+        return user.Gid != Guid.Empty ? true : false;
     }
 }

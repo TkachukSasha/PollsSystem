@@ -6,23 +6,28 @@ import { MatIconModule } from "@angular/material/icon";
 import { FormsModule } from "@angular/forms";
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { FooterComponent } from './components/footer/footer.component';
+import {RouterModule} from "@angular/router";
+import { TimeBarComponent } from './components/time-bar/time-bar.component';
 
 @NgModule({
   declarations: [
     NavBarComponent,
     SearchBarComponent,
-    FooterComponent
+    FooterComponent,
+    TimeBarComponent
   ],
-  exports: [
-    NavBarComponent,
-    SearchBarComponent,
-    FooterComponent
-  ],
-  imports: [
-    CommonModule,
-    MatSnackBarModule,
-    MatIconModule,
-    FormsModule
-  ]
+    exports: [
+        NavBarComponent,
+        SearchBarComponent,
+        FooterComponent,
+        TimeBarComponent
+    ],
+    imports: [
+        CommonModule,
+        MatSnackBarModule,
+        MatIconModule,
+        FormsModule,
+        RouterModule
+    ]
 })
 export class SharedModule { }

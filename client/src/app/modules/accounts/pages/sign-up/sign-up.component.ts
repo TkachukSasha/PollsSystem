@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import CustomValidators from "../../validators/custom-validators";
 import { Router } from "@angular/router";
@@ -6,6 +6,7 @@ import { HttpService } from "../../../../core/services/http/http-service";
 import { StorageService } from "../../../../core/services/storage/storage-service";
 import { SignUpRequest } from "../../models/sign-up-request";
 import { NgxSpinnerService } from "ngx-spinner";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-sign-up',
@@ -13,9 +14,10 @@ import { NgxSpinnerService } from "ngx-spinner";
   styleUrls: ['./sign-up.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SignUpComponent implements OnInit {
+export class SignUpComponent implements OnInit, OnDestroy {
   isLoaded: boolean = false;
   signUpForm!: FormGroup;
+  private signUpSubscription: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -37,6 +39,12 @@ export class SignUpComponent implements OnInit {
     })
   }
 
+  ngOnDestroy(): void {
+    if (this.signUpSubscription) {
+      this.signUpSubscription.unsubscribe();
+    }
+  }
+
   handleRegister(){
     let firstName = this.signUpForm.controls['firstName'].value;
     let lastName = this.signUpForm.controls['lastName'].value;
@@ -48,7 +56,7 @@ export class SignUpComponent implements OnInit {
     this.spinner.show();
 
     // @ts-ignore
-    this._authService.signUp(request)
+    this.signUpSubscription = this._authService.signUp(request)
       .subscribe(
         (data: any) => {
           this._storage.storeData('auth', JSON.stringify(data));

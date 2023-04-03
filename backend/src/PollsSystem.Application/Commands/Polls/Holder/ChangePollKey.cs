@@ -21,7 +21,7 @@ public class ChangePollKeyValidator : AbstractValidator<ChangePollKey>
     }
 }
 
-public sealed record ChangePollKey(Guid PollGid, string CurrentKey) : ICommand<Guid>, IValidate
+public sealed record ChangePollKey(string PollGid, string CurrentKey) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -51,7 +51,7 @@ public class ChangePollKeyHandler : ICommandHandler<ChangePollKey, Guid>
 
     public async ValueTask<Guid> Handle(ChangePollKey command, CancellationToken cancellationToken)
     {
-        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == command.PollGid);
+        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == Guid.Parse(command.PollGid));
 
         if (existingPoll is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,

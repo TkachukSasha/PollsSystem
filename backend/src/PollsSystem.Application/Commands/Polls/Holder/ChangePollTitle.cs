@@ -25,7 +25,7 @@ public class ChangePollTitleValidator : AbstractValidator<ChangePollTitle>
     }
 }
 
-public sealed record ChangePollTitle(Guid PollGid, string CurrentTitle, string Title) : ICommand<Guid>, IValidate
+public sealed record ChangePollTitle(string PollGid, string CurrentTitle, string Title) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {

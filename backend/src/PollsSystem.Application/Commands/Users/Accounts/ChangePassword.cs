@@ -27,7 +27,7 @@ public class ChangePasswordValidator : AbstractValidator<ChangePassword>
     }
 }
 
-public sealed record ChangePassword(Guid UserGid, string CurrentPassword, string Password) : ICommand<Guid>, IValidate
+public sealed record ChangePassword(string UserGid, string CurrentPassword, string Password) : ICommand<bool>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -42,7 +42,7 @@ public sealed record ChangePassword(Guid UserGid, string CurrentPassword, string
     }
 }
 
-public class ChangePasswordHandler : ICommandHandler<ChangePassword, Guid>
+public class ChangePasswordHandler : ICommandHandler<ChangePassword, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBaseRepository _baseRepository;
@@ -58,9 +58,11 @@ public class ChangePasswordHandler : ICommandHandler<ChangePassword, Guid>
         _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
     }
 
-    public async ValueTask<Guid> Handle(ChangePassword command, CancellationToken cancellationToken)
+    public async ValueTask<bool> Handle(ChangePassword command, CancellationToken cancellationToken)
     {
-        var existingUser = await _baseRepository.GetByConditionAsync<User>(x => x.Gid == command.UserGid);
+        var userGid = Guid.Parse(command.UserGid);
+
+        var existingUser = await _baseRepository.GetByConditionAsync<User>(x => x.Gid == userGid);
 
         if (existingUser is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
@@ -83,6 +85,6 @@ public class ChangePasswordHandler : ICommandHandler<ChangePassword, Guid>
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return user.Gid;
+        return user.Gid != Guid.Empty ? true : false;
     }
 }

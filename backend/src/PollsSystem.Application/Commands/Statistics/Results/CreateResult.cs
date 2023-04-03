@@ -30,7 +30,7 @@ public class CreateResultValidator : AbstractValidator<CreateResult>
     }
 }
 
-public sealed record CreateResult(double Score, double Percents, string FirstName, string LastName, Guid PollGid) : ICommand<Guid>, IValidate
+public sealed record CreateResult(double Score, double Percents, string FirstName, string LastName, string PollGid) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -60,7 +60,7 @@ public class CreateResultHandler : ICommandHandler<CreateResult, Guid>
 
     public async ValueTask<Guid> Handle(CreateResult command, CancellationToken cancellationToken)
     {
-        var existingResult = await _baseRepository.GetByConditionAsync<Result>(x => x.PollGid == command.PollGid && x.LastName == command.LastName);
+        var existingResult = await _baseRepository.GetByConditionAsync<Result>(x => x.PollGid == Guid.Parse(command.PollGid) && x.LastName == command.LastName);
 
         if (existingResult is not null)
             throw new BaseException(ExceptionCodes.ValueAlreadyExist,
@@ -71,7 +71,7 @@ public class CreateResultHandler : ICommandHandler<CreateResult, Guid>
                command.Percents,
                command.FirstName,
                command.LastName,
-               command.PollGid
+               Guid.Parse(command.PollGid)
           );
 
         _baseRepository.Add(result);

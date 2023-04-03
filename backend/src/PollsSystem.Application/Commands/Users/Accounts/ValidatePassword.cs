@@ -21,7 +21,7 @@ public class ValidatePasswordValidator : AbstractValidator<ValidatePassword>
     }
 }
 
-public sealed record ValidatePassword(Guid UserGid, string Password) : ICommand<bool>, IValidate
+public sealed record ValidatePassword(string UserGid, string Password) : ICommand<bool>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -51,7 +51,9 @@ public class ValidatePasswordHandler : ICommandHandler<ValidatePassword, bool>
 
     public async ValueTask<bool> Handle(ValidatePassword command, CancellationToken cancellationToken)
     {
-        var user = await _baseRepository.GetByConditionAsync<User>(x => x.Gid == command.UserGid);
+        var userGid = Guid.Parse(command.UserGid);
+
+        var user = await _baseRepository.GetByConditionAsync<User>(x => x.Gid == userGid);
 
         if (user is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,

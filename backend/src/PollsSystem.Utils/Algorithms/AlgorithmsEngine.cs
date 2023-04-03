@@ -38,7 +38,23 @@ public static class AlgorithmsEngine
         return questions;
     }
 
-    public static List<TData> ShuffleQuizQuestionsV3<TData>(List<TData> questions)
+    public static List<TData> ShuffleQuizQuestionsV3<TData>(List<TData> array)
+    {
+        List<TData> shuffledArray = new List<TData>(array);
+
+        int n = shuffledArray.Count;
+        for (int i = 0; i < n; i++)
+        {
+            int j = i + (int)Math.Floor((n - i) * new Random().NextDouble());
+            TData temp = shuffledArray[i];
+            shuffledArray[i] = shuffledArray[j];
+            shuffledArray[j] = temp;
+        }
+
+        return shuffledArray;
+    }
+
+    public static List<TData> ShuffleQuizQuestionsV4<TData>(List<TData> questions)
     {
         List<TData> shuffled = new List<TData>();
         List<int> indices = Enumerable.Range(0, questions.Count).ToList();

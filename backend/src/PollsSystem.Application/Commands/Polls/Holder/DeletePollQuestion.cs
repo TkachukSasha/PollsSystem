@@ -21,7 +21,7 @@ public class DeletePollQuestionValidator : AbstractValidator<DeletePollQuestion>
     }
 }
 
-public sealed record DeletePollQuestion(Guid PollGid, Guid QuestionGid) : ICommand<Guid>, IValidate
+public sealed record DeletePollQuestion(string PollGid, string QuestionGid) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -59,7 +59,7 @@ public class DeletePollQuestionHandler : ICommandHandler<DeletePollQuestion, Gui
         DeletePollQuestion command,
         CancellationToken cancellationToken)
     {
-        var existingQuestion = await _baseRepository.GetByConditionAsync<Question>(x => x.PollGid == command.PollGid && x.Gid == command.QuestionGid);
+        var existingQuestion = await _baseRepository.GetByConditionAsync<Question>(x => x.PollGid == Guid.Parse(command.PollGid) && x.Gid == Guid.Parse(command.QuestionGid));
 
         if (existingQuestion is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,

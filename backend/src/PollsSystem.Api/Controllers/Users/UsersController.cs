@@ -41,21 +41,13 @@ public class UsersController : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async ValueTask<IActionResult> GetUser([FromQuery] GetUserQuery query)
     {
-        var user = await _repository.GetByConditionAsync<User>(x => x.Gid == query.UserGid);
+        var userGid = Guid.Parse(query.UserGid);
+
+        var user = await _repository.GetByConditionAsync<User>(x => x.Gid == userGid);
 
         var userRole = await _repository.GetByConditionAsync<Role>(x => x.Gid == user.RoleGid);
 
         return Ok(user.ToUserExtendedResponse(userRole.Name));
-    }
-
-    [HttpGet("username")]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async ValueTask<IActionResult> GetUserName([FromQuery] GetUserQuery query)
-    {
-        var user = await _repository.GetByConditionAsync<User>(x => x.Gid == query.UserGid);
-
-        return user is not null ? Ok(user.UserName.Value) : NoContent();
     }
 
     [HttpGet("by-input")]

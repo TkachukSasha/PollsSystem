@@ -47,7 +47,7 @@ public class AnswerDtoValidator : AbstractValidator<AnswerDto>
     }
 }
 
-public sealed record CreatePollQuestions(Guid PollGid, List<QuestionDto> Questions) : ICommand<Guid>, IValidate
+public sealed record CreatePollQuestions(string PollGid, List<QuestionDto> Questions) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -64,7 +64,7 @@ public sealed record CreatePollQuestions(Guid PollGid, List<QuestionDto> Questio
 
 public record QuestionDto(string QuestionName, List<AnswerDto> Answers);
 
-public record AnswerDto(string AnswerText, Guid ScoreGid);
+public record AnswerDto(string AnswerText, string ScoreGid);
 
 public class CreatePollQuestionsHandler : ICommandHandler<CreatePollQuestions, Guid>
 {
@@ -90,7 +90,7 @@ public class CreatePollQuestionsHandler : ICommandHandler<CreatePollQuestions, G
        CreatePollQuestions command,
        CancellationToken cancellationToken)
     {
-        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == command.PollGid);
+        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == Guid.Parse(command.PollGid));
 
         if (existingPoll is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
@@ -118,7 +118,7 @@ public class CreatePollQuestionsHandler : ICommandHandler<CreatePollQuestions, G
 
                 var answer = AnswerInit(
                     answerItem.AnswerText,
-                    answerItem.ScoreGid,
+                    Guid.Parse(answerItem.ScoreGid),
                     question.Gid,
                     isAnswerTextUnique.GetValueOrDefault()
                 );

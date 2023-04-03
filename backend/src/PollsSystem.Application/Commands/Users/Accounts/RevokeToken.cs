@@ -20,7 +20,7 @@ public class RevokeTokenValidator : AbstractValidator<RevokeToken>
     }
 }
 
-public sealed record RevokeToken(Guid UserGid) : ICommand, IValidate
+public sealed record RevokeToken(string UserGid) : ICommand, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -53,7 +53,9 @@ public class RevokeTokenHandler : ICommandHandler<RevokeToken>
 
     public async ValueTask<Unit> Handle(RevokeToken command, CancellationToken cancellationToken)
     {
-        var existingUser = await _baseRepository.GetByConditionAsync<User>(x => x.Gid == command.UserGid);
+        var userGid = Guid.Parse(command.UserGid);
+
+        var existingUser = await _baseRepository.GetByConditionAsync<User>(x => x.Gid == userGid);
 
         var existingRole = await _baseRepository.GetByConditionAsync<Role>(x => x.Gid == existingUser.RoleGid);
 

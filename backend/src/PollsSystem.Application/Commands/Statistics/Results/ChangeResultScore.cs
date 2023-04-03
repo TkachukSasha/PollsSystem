@@ -24,7 +24,7 @@ public class ChangeResultScoreValidator : AbstractValidator<ChangeResultScore>
     }
 }
 
-public sealed record ChangeResultScore(Guid PollGid, string LastName, double Score) : ICommand<Guid>, IValidate
+public sealed record ChangeResultScore(string PollGid, string LastName, double Score) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -54,7 +54,7 @@ public class ChangeResultScoreHandler : ICommandHandler<ChangeResultScore, Guid>
 
     public async ValueTask<Guid> Handle(ChangeResultScore command, CancellationToken cancellationToken)
     {
-        var existingResult = await _baseRepository.GetByConditionAsync<Result>(x => x.PollGid == command.PollGid && x.LastName == command.LastName);
+        var existingResult = await _baseRepository.GetByConditionAsync<Result>(x => x.PollGid == Guid.Parse(command.PollGid) && x.LastName == command.LastName);
 
         if (existingResult is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,

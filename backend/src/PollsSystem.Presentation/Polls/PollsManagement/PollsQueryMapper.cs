@@ -14,6 +14,19 @@ public static class PollsQueryMapper
             poll.Duration.Value
         );
 
+    public static QuestionsWithAnswersResponse ToQuestionsWithAnswersResponse(this Question question, List<Answer> answers)
+        => new QuestionsWithAnswersResponse(
+            question.Gid,
+            question.QuestionName.Value,
+            answers.Select(x => x.ToAnswerResponse()).ToList()
+        );
+
+    public static AnswerResponse ToAnswerResponse(this Answer answer)
+        => new AnswerResponse(
+            answer.Gid,
+            answer.AnswerText.Value
+        );
+
     public static ScoreResponse ToScoreResponse(this Score score)
         => new ScoreResponse(
             score.Gid,

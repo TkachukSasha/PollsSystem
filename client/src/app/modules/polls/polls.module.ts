@@ -10,6 +10,12 @@ import { FilterPollsPipe } from "./pipes/filter-polls.pipe";
 import { NgxSpinnerModule } from "ngx-spinner";
 import { PollItemPopupComponent } from './components/poll-item-popup/poll-item-popup.component';
 import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
+import { PollPassComponent } from './pages/poll-pass/poll-pass.component';
+import { MyPollsComponent } from './pages/my-polls/my-polls.component';
+import { MyPollItemComponent } from './components/my-poll-item/my-poll-item.component';
+import { PollPassThanksgivingComponent } from './pages/poll-pass-thanksgiving/poll-pass-thanksgiving.component';
+import { ExistResultPopupComponent } from './components/exist-result-popup/exist-result-popup.component';
+import { TimeOverPopupComponent } from './components/time-over-popup/time-over-popup.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +23,13 @@ import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
     PollsItemComponent,
     FilterPollsPipe,
     PollItemPopupComponent,
-    MainLayoutComponent
+    MainLayoutComponent,
+    PollPassComponent,
+    MyPollsComponent,
+    MyPollItemComponent,
+    PollPassThanksgivingComponent,
+    ExistResultPopupComponent,
+    TimeOverPopupComponent
   ],
     imports: [
         CommonModule,

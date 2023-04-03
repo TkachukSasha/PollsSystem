@@ -1,4 +1,7 @@
 <div class="account__settings-wrapper">
+  <a class="account__settings-back" href="/polls">
+    <mat-icon>arrow_back</mat-icon>
+  </a>
   <h1 class="account__settings-main">Choose option</h1>
   <div class="account__settins-content" (click)="onEditUserNameClick()">
     <h2 class="account__settins-title">Edit Username</h2>
@@ -7,6 +10,8 @@
   <div class="account__settins-content" (click)="onEditPasswordNameClick()">
       <h2 class="account__settins-title">Edit Password</h2>
   </div>
+
+  <button class="account__settins-delete" type="submit" (click)="onDeleteAccoount()">Delete Account</button>
 </div>
 
 

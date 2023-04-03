@@ -26,7 +26,7 @@ public class ChangeAnswerTextValidator : AbstractValidator<ChangeAnswerText>
     }
 }
 
-public sealed record ChangeAnswerText(Guid QuestionGid, Guid AnswerGid, string Text) : ICommand<Guid>, IValidate
+public sealed record ChangeAnswerText(string QuestionGid, string AnswerGid, string Text) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -56,13 +56,13 @@ public class ChangeAnswerTextHandler : ICommandHandler<ChangeAnswerText, Guid>
 
     public async ValueTask<Guid> Handle(ChangeAnswerText command, CancellationToken cancellationToken)
     {
-        var existingQuestion = await _baseRepository.GetByConditionAsync<Question>(x => x.Gid == command.QuestionGid);
+        var existingQuestion = await _baseRepository.GetByConditionAsync<Question>(x => x.Gid == Guid.Parse(command.QuestionGid));
 
         if (existingQuestion is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
                 $"Question with: {command.QuestionGid} is null!");
 
-        var existingAnswer = await _baseRepository.GetByConditionAsync<Answer>(x => x.QuestionGid == command.QuestionGid && x.Gid == command.AnswerGid);
+        var existingAnswer = await _baseRepository.GetByConditionAsync<Answer>(x => x.QuestionGid == Guid.Parse(command.QuestionGid) && x.Gid == Guid.Parse(command.AnswerGid));
 
         if (existingAnswer is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
@@ -72,7 +72,7 @@ public class ChangeAnswerTextHandler : ICommandHandler<ChangeAnswerText, Guid>
             throw new BaseException(ExceptionCodes.ValueAlreadyExist,
                 $"Answer with: {command.Text} is already exist!");
 
-        bool? isAnswerTextUnique = await _baseRepository.IsFieldUniqueAsync<Answer>(x => x.QuestionGid == command.QuestionGid && x.AnswerText == command.Text);
+        bool? isAnswerTextUnique = await _baseRepository.IsFieldUniqueAsync<Answer>(x => x.QuestionGid == Guid.Parse(command.QuestionGid) && x.AnswerText == command.Text);
 
         var answer = Answer.ChangeAnswerText(
                 existingAnswer,

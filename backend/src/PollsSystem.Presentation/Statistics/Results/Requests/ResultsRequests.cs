@@ -1,9 +1,11 @@
 ﻿namespace PollsSystem.Presentation.Statistics.Results.Requests;
 
-public record ChangeResultScoreRequest(Guid PollGid, string LastName, double Score);
+public record ChangeResultScoreRequest(string PollGid, string LastName, double Score);
 
-public record DeleteResultRequest(Guid PollGid, Guid ResultGid);
+public record DeleteResultRequest(string PollGid, string ResultGid);
 
-public record GetResultsQuery(Guid PollGid);
+public record GetResultsQuery(string PollGid);
 
-public record GetResultsByLastNameQuery(Guid PollGid, string LastName);
+public record GetResultQuery(string PollGid, string LastName);
+
+public record GetResultsByLastNameQuery(string PollGid, string LastName);

@@ -27,7 +27,7 @@ public class SendRepliesValidator : AbstractValidator<SendReplies>
     }
 }
 
-public sealed record SendReplies(Guid PollGid, string FirstName, string LastName, List<Guid> AnswerGids) : ICommand<Guid>, IValidate
+public sealed record SendReplies(string PollGid, string FirstName, string LastName, Dictionary<string, string> QuestionAnswer) : ICommand<Guid>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -62,15 +62,17 @@ public class SendRepliesHandler : ICommandHandler<SendReplies, Guid>
     {
         List<double> scores = new();
 
-        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == command.PollGid);
+        var pollGid = Guid.Parse(command.PollGid);
+
+        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == pollGid);
 
         if (existingPoll is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
                 $"Poll: {command.PollGid} not found");
 
-        foreach (var answerGid in command.AnswerGids)
+        foreach (var (key, value) in command.QuestionAnswer)
         {
-            var answer = await _baseRepository.GetByConditionAsync<Answer>(x => x.Gid == answerGid);
+            var answer = await _baseRepository.GetByConditionAsync<Answer>(x => x.QuestionGid == Guid.Parse(key) && x.Gid == Guid.Parse(value));
 
             var score = await _baseRepository.GetByConditionAsync<Score>(x => x.Gid == answer.ScoreGid);
 

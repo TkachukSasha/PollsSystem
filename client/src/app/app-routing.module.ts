@@ -10,12 +10,12 @@ const routes: Routes = [
   {
     path: "polls",
     loadChildren: () => import("./modules/polls/polls.module").then(m => m.PollsModule),
-    //canActivate: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   {
     path: "accounts-settings",
     loadChildren: () => import("./modules/accounts-settings/accounts-settings.module").then(m => m.AccountsSettingsModule),
-    //canActivate: [AuthGuard]
+    canActivate: [AuthGuard]
   }
 ];
 

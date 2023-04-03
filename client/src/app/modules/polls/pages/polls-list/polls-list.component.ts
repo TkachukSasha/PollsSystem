@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {IPoll} from "../../models/poll-model";
 import {HttpService} from "../../../../core/services/http/http-service";
 import {ApiMethod} from "../../../../core/enums/api-methods";
-import {map, Observable, tap} from "rxjs";
+import {map, Observable, Subscription, tap} from "rxjs";
 import {NgxSpinnerService} from "ngx-spinner";
 
 @Component({
@@ -11,7 +11,7 @@ import {NgxSpinnerService} from "ngx-spinner";
   styleUrls: ['./polls-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PollsListComponent implements OnInit {
+export class PollsListComponent implements OnInit, OnDestroy {
   isPollItemPopupShowed: boolean = false;
   isLoaded: boolean = false;
   searchText: string;
@@ -19,6 +19,7 @@ export class PollsListComponent implements OnInit {
   poll: IPoll;
   polls: IPoll[];
   polls$: Observable<IPoll[]>;
+  pollsSubscription: Subscription;
 
   constructor(
     private _http: HttpService,
@@ -33,6 +34,13 @@ export class PollsListComponent implements OnInit {
         map((data) => this.polls = data),
         tap(() => this.onPollsLoaded())
       )
+    this.pollsSubscription = this.polls$.subscribe();
+  }
+
+  ngOnDestroy(): void {
+    if (this.pollsSubscription) {
+      this.pollsSubscription.unsubscribe();
+    }
   }
 
   onPollsLoaded(){

@@ -1,0 +1,44 @@
+<ngx-spinner
+  bdColor = "rgba(0, 0, 0, 0.8)"
+  size = "medium"
+  color = "#fff"
+  type = "square-jelly-box"
+  [fullScreen] = "true"
+><p style="color: white" > Loading... </p>
+</ngx-spinner>
+
+<app-exist-result-popup
+  *ngIf="isResultExist"
+>
+</app-exist-result-popup>
+
+<app-time-over-popup
+  *ngIf="isTimeOver"
+></app-time-over-popup>
+
+<app-time-bar
+  *ngIf="!isResultExist"
+  [duration]="duration"
+  (timeEnded)="onTimeEnded()"
+></app-time-bar>
+
+<div *ngIf="!isResultExist">
+  <div class="polls__questions-list" *ngIf="questions$ | async as questions">
+    <div class="polls__question" *ngFor="let question of questions">
+      <h3 class="polls__question-title">{{ question.questionName }}</h3>
+      <hr class="polls__questions-hr"/>
+      <div class="polls__answers" *ngFor="let option of question.answers">
+        <div class="polls__answers-title">
+          <h3 class="polls__answer-name">{{ option.answerName }}</h3>
+        </div>
+        <div class="polls__answers-input-wrapper">
+          <input class="polls__answer-input" type="radio" name="{{ question.gid }}" [value]="option.gid"
+                 [checked]="option.gid === selectedOptions.get(question.gid)"
+                 (change)="onRadioChange(question.gid, option.gid)">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button *ngIf="!isResultExist" class="questions__list-submit" type="submit" (click)="onSubmitClick()">Submit</button>

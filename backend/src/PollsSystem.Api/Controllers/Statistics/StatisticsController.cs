@@ -35,12 +35,26 @@ public class StatisticsController : BaseController
         return response is null ? NoContent() : Ok(response);
     }
 
+    [HttpGet("get-result")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async ValueTask<IActionResult> GetResult([FromQuery] GetResultQuery query)
+    {
+        var pollGid = Guid.Parse(query.PollGid);
+
+        var result = await _repository.GetByConditionAsync<Result>(x => x.PollGid == pollGid && x.LastName == query.LastName);
+
+        return result is null ? Ok(false) : Ok(true);
+    }
+
     [HttpGet("results")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async ValueTask<IActionResult> GetResults([FromQuery] GetResultsQuery query)
     {
-        var results = await _repository.GetEntitiesByConditionAsync<Result>(x => x.PollGid == query.PollGid);
+        var pollGid = Guid.Parse(query.PollGid);
+
+        var results = await _repository.GetEntitiesByConditionAsync<Result>(x => x.PollGid == pollGid);
 
         var response = results?.Select(x => x?.ToResultResponse());
 
@@ -52,7 +66,9 @@ public class StatisticsController : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async ValueTask<IActionResult> GetResult([FromQuery] GetResultsByLastNameQuery query)
     {
-        var result = await _repository.GetByConditionAsync<Result>(x => x.PollGid == query.PollGid && x.LastName == query.LastName);
+        var pollGid = Guid.Parse(query.PollGid);
+
+        var result = await _repository.GetByConditionAsync<Result>(x => x.PollGid == pollGid && x.LastName == query.LastName);
 
         result.ToResultResponse();
 

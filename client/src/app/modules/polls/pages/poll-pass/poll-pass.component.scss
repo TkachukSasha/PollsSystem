@@ -1,0 +1,47 @@
+.polls__questions-list {
+  margin-bottom: 30px;
+
+  .polls__question {
+    margin-bottom: 20px;
+    background-color: #E5EAD9;
+
+    .polls__question-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .polls__questions-hr{
+      margin-bottom: 20px;
+    }
+
+    .polls__answers{
+      display: flex;
+      justify-content: space-between;
+
+      .polls__answers-title{
+        flex-direction: column;
+        font-size: 16px;
+        font-weight: lighter;
+      }
+
+      .polls__answers-input-wrapper{
+        margin-right: 40px;
+        flex-direction: column;
+      }
+    }
+  }
+}
+
+.questions__list-submit {
+  display: block;
+  margin: 0 auto;
+  width: 50%;
+  background-color: #E5EAD9;
+  color: #2D2F2C;
+  text-align: center;
+  border: none;
+  border-radius: 8px;
+  font-weight: 400;
+  padding: 12px;
+}

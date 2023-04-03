@@ -45,6 +45,6 @@ public static class Mapper
             model.Percents,
             model.FirstName,
             model.LastName,
-            model.PollGid
+            model.PollGid.ToString()
            );
 }

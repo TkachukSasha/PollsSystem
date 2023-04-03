@@ -23,8 +23,6 @@ export class AuthGuard implements CanActivate {
     // @ts-ignore
     const access_token = data?.accessToken;
 
-    console.log(`data from guard: ${access_token}`);
-
     if(!access_token){
       this.router.navigateByUrl("");
       return false;

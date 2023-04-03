@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PollsSystem.Application.Commands.Users.Accounts;
 using PollsSystem.Application.Responses.Users;
+using PollsSystem.Domain.Entities.Users;
 using PollsSystem.Presentation.Users.Accounts.Requests;
+using PollsSystem.Presentation.Users.UsersManagement.Requests;
+using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Security.Storage;
 
 namespace PollsSystem.Api.Controllers.Users;
@@ -14,13 +17,16 @@ namespace PollsSystem.Api.Controllers.Users;
 public class AccountsController : BaseController
 {
     private readonly IStorage _storage;
+    private readonly IBaseRepository _repository;
 
     public AccountsController(
         IMediator mediator,
-        IStorage storage)
+        IStorage storage,
+        IBaseRepository repository)
         : base(mediator)
     {
         _storage = storage ?? throw new ArgumentNullException(nameof(storage));
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
     }
 
     [AllowAnonymous]
@@ -62,6 +68,18 @@ public class AccountsController : BaseController
         var data = _storage.Get<AuthResponse>("auth");
 
         return data is null ? NoContent() : Ok(data);
+    }
+
+    [HttpGet("username")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async ValueTask<IActionResult> GetUserName([FromQuery] GetUserQuery query)
+    {
+        var userGid = Guid.Parse(query.UserGid);
+
+        var user = await _repository.GetByConditionAsync<User>(x => x.Gid == userGid);
+
+        return user is not null ? Ok(new { userName = user.UserName.Value }) : NoContent();
     }
 
     [HttpPatch("validate-password")]

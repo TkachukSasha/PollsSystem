@@ -7,7 +7,7 @@
         </a>
       </div>
       <div class="header__center-wrapper">
-        <a href="#" class="header__center-title">
+        <a routerLink="/polls/my-polls" class="header__center-title">
           My Polls
         </a>
       </div>
@@ -15,7 +15,7 @@
         <a href="/accounts-settings" class="header__account-icon">
           <mat-icon>manage_accounts</mat-icon>
         </a>
-        <a href="" class="header__logout-icon">
+        <a class="header__logout-icon" (click)="onLogout()">
           <mat-icon>exit_to_app</mat-icon>
         </a>
       </div>

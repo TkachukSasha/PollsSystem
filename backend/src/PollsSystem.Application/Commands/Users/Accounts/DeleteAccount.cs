@@ -18,7 +18,7 @@ public class DeleteAccountValidator : AbstractValidator<DeleteAccount>
     }
 }
 
-public sealed record DeleteAccount(Guid UserGid) : ICommand<bool>, IValidate
+public sealed record DeleteAccount(string UserGid) : ICommand<bool>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -48,16 +48,18 @@ public class DeleteAccountHandler : ICommandHandler<DeleteAccount, bool>
 
     public async ValueTask<bool> Handle(DeleteAccount command, CancellationToken cancellationToken)
     {
-        var existingUser = await _baseRepository.GetByConditionAsync<User>(x => x.Gid == command.UserGid);
+        var userGid = Guid.Parse(command.UserGid);
+
+        var existingUser = await _baseRepository.GetByConditionAsync<User>(x => x.Gid == userGid);
 
         if (existingUser is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
                 $"User: {command.UserGid} is null or empty");
 
-        var userGid = _baseRepository.Delete<User>(existingUser.Gid);
+        var userResultGid = _baseRepository.Delete<User>(existingUser.Gid);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return userGid != Guid.Empty ? true : false;
+        return userResultGid != Guid.Empty ? true : false;
     }
 }
