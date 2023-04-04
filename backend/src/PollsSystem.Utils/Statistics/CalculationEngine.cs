@@ -75,6 +75,70 @@ public static class CalculationEngine
     }
 
     /// <summary>
+    /// Set mean of the sorted collection
+    /// </summary>
+    /// <param name="values">Collection</param>
+    /// <returns>Mean value of collection result</returns>
+    public static double SetMean(this double[] values)
+    {
+        double mean = 0d;
+        ulong marker = 0;
+
+        if (!values.Any()) return double.NaN;
+
+        for (int item = 0; item < values.Length; item++)
+            mean += (values[item] - mean) / ++marker;
+
+        return mean;
+    }
+
+    /// <summary>
+    /// Set median of the unsorted collection
+    /// </summary>
+    /// <param name="values">Collection</param>
+    /// <returns>Median of the collection</returns>
+    public static double SetMedian(this double[] values)
+    {
+        if (!values.Any() || values is null) return 0;
+
+        int collectionSize = values.Length;
+
+        int midElement = collectionSize / 2;
+
+        return (collectionSize % 2 is not 0) ? values[midElement] : (values[midElement] + values[midElement - 1]) / 2;
+    }
+
+    /// <summary>
+    /// Set variance of the unsorted collection
+    /// </summary>
+    /// <param name="values">Collection</param>
+    /// <returns>Variance of the collection</returns>
+    public static double SetVariance(this double[] values)
+    {
+        double variance = 0d;
+        double tMarker = values[0];
+
+        if (values.Length <= 1) return double.NaN;
+
+        for (int item = 1; item < values.Length; item++)
+        {
+            tMarker += values[item];
+            double diff = ((item + 1) * values[item]) - tMarker;
+            variance += (diff * diff) / ((item + 1.0) * item);
+        }
+
+        return variance / (values.Length - 1);
+    }
+
+    /// <summary>
+    /// Set standart dev of the unsorted collection
+    /// </summary>
+    /// <param name="values">Collection</param>
+    /// <returns>Standart dev of the collection>/returns>
+    public static double SetStandartDev(this double[] values)
+        => Math.Sqrt(SetVariance(values));
+
+    /// <summary>
     /// Set standart dev mean of the collection
     /// </summary>
     /// <param name="values">Collection</param>
@@ -133,24 +197,6 @@ public static class CalculationEngine
     }
 
     /// <summary>
-    /// Set mean of the sorted collection
-    /// </summary>
-    /// <param name="values">Collection</param>
-    /// <returns>Mean value of collection result</returns>
-    public static double SetMean(this double[] values)
-    {
-        double mean = 0d;
-        ulong marker = 0;
-
-        if (!values.Any()) return double.NaN;
-
-        for (int item = 0; item < values.Length; item++)
-            mean += (values[item] - mean) / ++marker;
-
-        return mean;
-    }
-
-    /// <summary>
     /// Set gometric mean of the unsorted collection
     /// </summary>
     /// <param name="values">Collection</param>
@@ -182,22 +228,6 @@ public static class CalculationEngine
             collectionSum += 1.0 / values[item];
 
         return values.Length / collectionSum;
-    }
-
-    /// <summary>
-    /// Set median of the unsorted collection
-    /// </summary>
-    /// <param name="values">Collection</param>
-    /// <returns>Median of the collection</returns>
-    public static double SetMedian(this double[] values)
-    {
-        if (!values.Any() || values is null) return 0;
-
-        int collectionSize = values.Length;
-
-        int midElement = collectionSize / 2;
-
-        return (collectionSize % 2 is not 0) ? values[midElement] : (values[midElement] + values[midElement - 1]) / 2;
     }
 
     /// <summary>
@@ -259,42 +289,12 @@ public static class CalculationEngine
         => values.SetPercentile(75) - values.SetPercentile(25);
 
     /// <summary>
-    /// Set standart dev of the unsorted collection
-    /// </summary>
-    /// <param name="values">Collection</param>
-    /// <returns>Standart dev of the collection>/returns>
-    public static double SetStandartDev(this double[] values)
-        => Math.Sqrt(SetVariance(values));
-
-    /// <summary>
     /// Set population standart dev of the unsorted collection
     /// </summary>
     /// <param name="values">Collection</param>
     /// <returns>Population standart dev of the collection>/returns>
     public static double SetPopulationStandartDev(this double[] values)
         => Math.Sqrt(SetPopulationVariance(values));
-
-    /// <summary>
-    /// Set variance of the unsorted collection
-    /// </summary>
-    /// <param name="values">Collection</param>
-    /// <returns>Variance of the collection</returns>
-    public static double SetVariance(this double[] values)
-    {
-        double variance = 0d;
-        double tMarker = values[0];
-
-        if (values.Length <= 1) return double.NaN;
-
-        for (int item = 1; item < values.Length; item++)
-        {
-            tMarker += values[item];
-            double diff = ((item + 1) * values[item]) - tMarker;
-            variance += (diff * diff) / ((item + 1.0) * item);
-        }
-
-        return variance / (values.Length - 1);
-    }
 
     /// <summary>
     /// Set Skewness of the collection
