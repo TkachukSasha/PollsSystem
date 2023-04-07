@@ -34,6 +34,7 @@ export class EditUsernamePopupComponent implements OnInit, OnDestroy{
       .subscribe(
         (data: any) => {
           this.currentUserName = data.userName;
+          console.log(`currentUserName: ${this.currentUserName}`)
           this.isDisabled = true;
           this.onRequestExcecuted();
         }

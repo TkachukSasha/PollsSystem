@@ -3,6 +3,7 @@ import { HttpService } from "../../../core/services/http/http-service";
 import { map, Observable} from "rxjs";
 import { CheckPollKey } from "../models/check-poll-key";
 import { ApiMethod } from "../../../core/enums/api-methods";
+import {SendReplies} from "../models/send-replies";
 
 @Injectable({
   providedIn: 'root'
@@ -22,5 +23,18 @@ export class PollsService {
             return data;
           })
         )
+  }
+
+  // @ts-ignore
+  sendReplies(payload: SendReplies) : Observable<boolean>{
+    let request = JSON.stringify(payload);
+
+    // @ts-ignore
+    return  this._http.requestCall<boolean>(`/external/send-replies`, ApiMethod.POST, request)
+      .pipe(
+        map((data: boolean) => {
+          return data;
+        })
+      )
   }
 }

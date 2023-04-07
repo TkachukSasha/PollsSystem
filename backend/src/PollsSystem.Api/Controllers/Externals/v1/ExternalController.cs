@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using PollsSystem.Application.Commands.Polls.External;
 using PollsSystem.Presentation.Polls.External.Requests;
 
-namespace PollsSystem.Api.Controllers;
+namespace PollsSystem.Api.Controllers.Externals.v1;
 
 [Authorize]
-[Route("api/external")]
+[Route("api/v{version:apiVersion}/external")]
+[ApiVersion("1.0")]
 public class ExternalController : BaseController
 {
     public ExternalController(IMediator mediator)

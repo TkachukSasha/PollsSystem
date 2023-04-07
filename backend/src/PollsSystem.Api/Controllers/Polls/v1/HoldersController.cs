@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using PollsSystem.Application.Commands.Polls.Holder;
 using PollsSystem.Presentation.Polls.Holders.Requests;
 
-namespace PollsSystem.Api.Controllers.Polls;
+namespace PollsSystem.Api.Controllers.Polls.v1;
 
 [Authorize]
-[Route("api/holders")]
+[Route("api/v{version:apiVersion}/holders")]
+[ApiVersion("1.0")]
 public class HoldersController : BaseController
 {
     public HoldersController(IMediator mediator)

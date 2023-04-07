@@ -6,6 +6,8 @@ import {IQuestionsWithAnswers} from "../../models/question-model";
 import {NgxSpinnerService} from "ngx-spinner";
 import {ApiMethod} from "../../../../core/enums/api-methods";
 import {StorageService} from "../../../../core/services/storage/storage-service";
+import {PollsService} from "../../services/polls-service.service";
+import {SendReplies} from "../../models/send-replies";
 
 @Component({
   selector: 'app-poll-pass',
@@ -14,6 +16,7 @@ import {StorageService} from "../../../../core/services/storage/storage-service"
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PollPassComponent implements OnInit, OnDestroy {
+  data: any;
   pollGid: string;
   duration: number;
   isLoaded: boolean = false;
@@ -21,30 +24,21 @@ export class PollPassComponent implements OnInit, OnDestroy {
   isResultExist: boolean = false;
   selectedOptions: Map<string, string> = new Map<string, string>();
   questions$: Observable<IQuestionsWithAnswers[]>;
-  questionSubscription: Subscription;
   existingResultSubscription: Subscription;
+  sendRepliesSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private _storage: StorageService,
     private _http: HttpService,
+    private  _pollsService: PollsService,
     private spinner: NgxSpinnerService
   ) {
     this.route.params.subscribe(params => {
       this.pollGid = params['pollGid'];
       this.duration = parseInt(params['duration']) * 60;
     });
-
-    // @ts-ignore
-    const data = JSON.parse(this._storage.getData('auth'));
-
-    // @ts-ignore
-    this.existingResultSubscription = this._http.requestCall<boolean>(`/statistics/get-result?PollGid=${this.pollGid}&LastName=${data?.lastName}`, ApiMethod.GET)
-      .pipe(
-        map((data) => this.isResultExist = data),
-        tap(() => this.onRequestExecuted())
-      )
   }
 
   @HostListener('window:beforeunload', ['$event'])
@@ -54,21 +48,34 @@ export class PollPassComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.spinner.show();
     // @ts-ignore
-    this.questions$ = this._http.requestCall<IQuestionsWithAnswers[]>(`/polls/questions?PollGid=${this.pollGid}`, ApiMethod.GET)
-      .pipe(
-        tap(() => this.onRequestExecuted()),
-        map(data => data)
-      )
+    this.data = JSON.parse(this._storage.getData('auth'));
 
-    this.questionSubscription = this.questions$.subscribe();
+    // @ts-ignore
+    this.existingResultSubscription = this._http.requestCall<boolean>(`/statistics/get-result?PollGid=${this.pollGid}&LastName=${this.data?.lastName}`, ApiMethod.GET)
+      .pipe(
+        map((data) => this.isResultExist = data),
+        tap(() => this.onRequestExecuted())
+      )
+      .subscribe(
+        () => {}, // Success callback
+        (error) => console.error(error) // Error callback
+      );
+
+    if(this.isResultExist === false){
+      this.spinner.show();
+
+      // @ts-ignore
+      this.questions$ = this._http.requestCall<IQuestionsWithAnswers[]>(`/polls/questions?PollGid=${this.pollGid}`, ApiMethod.GET)
+        .pipe(
+          tap(() => this.onRequestExecuted()),
+          map(data => data)
+        )
+    }
   }
 
   ngOnDestroy(): void {
-    if (this.questionSubscription) {
-      this.questionSubscription.unsubscribe();
-    }
+    this.existingResultSubscription.unsubscribe();
   }
 
   onTimeEnded(){
@@ -85,8 +92,13 @@ export class PollPassComponent implements OnInit, OnDestroy {
   }
 
   onSubmitClick(){
-    console.log(this.selectedOptions)
-    this.router.navigateByUrl('/polls/poll-pass/thanksgiving');
-  }
+    let request = new SendReplies(this.pollGid, this.data?.firstName, this.data?.lastName, this.selectedOptions);
 
+    // @ts-ignore
+    this.sendRepliesSubscription = this._pollsService.sendReplies(request)
+      .subscribe((data) => {
+        if(data)
+          this.router.navigateByUrl('/polls/poll-pass/thanksgiving');
+      })
+  }
 }

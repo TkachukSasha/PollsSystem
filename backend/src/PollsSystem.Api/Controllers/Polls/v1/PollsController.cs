@@ -10,10 +10,11 @@ using PollsSystem.Presentation.Polls.PollsManagement;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Utils.Algorithms;
 
-namespace PollsSystem.Api.Controllers.Polls;
+namespace PollsSystem.Api.Controllers.Polls.v1;
 
 [Authorize]
-[Route("api/polls")]
+[Route("api/v{version:apiVersion}/polls")]
+[ApiVersion("1.0")]
 public class PollsController : BaseController
 {
     private readonly IBaseRepository _repository;

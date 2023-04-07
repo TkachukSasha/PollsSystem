@@ -9,10 +9,11 @@ using PollsSystem.Presentation.Statistics.Results;
 using PollsSystem.Presentation.Statistics.Results.Requests;
 using PollsSystem.Shared.Dal.Repositories;
 
-namespace PollsSystem.Api.Controllers.Statistics;
+namespace PollsSystem.Api.Controllers.Statistics.v1;
 
 [Authorize]
-[Route("api/statistics")]
+[Route("api/v{version:apiVersion}/statistics")]
+[ApiVersion("1.0")]
 public class StatisticsController : BaseController
 {
     private readonly IBaseRepository _repository;

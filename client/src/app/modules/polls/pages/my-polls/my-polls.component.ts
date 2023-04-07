@@ -16,7 +16,7 @@ export class MyPollsComponent implements OnInit, OnDestroy {
   isLoaded: boolean = false;
   searchText: string;
   polls$: Observable<IPoll[]>;
-  pollsSubscription: Subscription;
+  pollsSubscription: Subscription[] = [];
 
   constructor(
     private _http: HttpService,
@@ -29,19 +29,18 @@ export class MyPollsComponent implements OnInit, OnDestroy {
     const data = JSON.parse(this._storage.getData('auth'));
 
     this.spinner.show();
-    // @ts-ignore
-    this.polls$ = this._http.requestCall<IPoll[]>(`/polls/user-polls?UserGid=${data?.userGid}`, ApiMethod.GET)
-      .pipe(
-        tap(() => this.onPollsLoaded())
-      )
 
-    this.pollsSubscription = this.polls$.subscribe();
+    this.pollsSubscription.push(
+      // @ts-ignore
+      this.polls$ = this._http.requestCall<IPoll[]>(`/polls/user-polls?UserGid=${data?.userGid}`, ApiMethod.GET)
+        .pipe(
+          tap(() => this.onPollsLoaded())
+        )
+    )
   }
 
   ngOnDestroy(): void {
-    if (this.pollsSubscription) {
-      this.pollsSubscription.unsubscribe();
-    }
+    this.pollsSubscription.forEach((subscription) => subscription.unsubscribe());
   }
 
   onSearchTextEntered(searchValue: string){

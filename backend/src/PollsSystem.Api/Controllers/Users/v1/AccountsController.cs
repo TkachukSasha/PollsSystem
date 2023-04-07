@@ -10,10 +10,11 @@ using PollsSystem.Presentation.Users.UsersManagement.Requests;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Security.Storage;
 
-namespace PollsSystem.Api.Controllers.Users;
+namespace PollsSystem.Api.Controllers.Users.v1;
 
 [Authorize]
-[Route("api/accounts")]
+[Route("api/v{version:apiVersion}/accounts")]
+[ApiVersion("1.0")]
 public class AccountsController : BaseController
 {
     private readonly IStorage _storage;

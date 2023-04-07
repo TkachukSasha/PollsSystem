@@ -19,7 +19,6 @@ export class PollsListComponent implements OnInit, OnDestroy {
   poll: IPoll;
   polls: IPoll[];
   polls$: Observable<IPoll[]>;
-  pollsSubscription: Subscription;
 
   constructor(
     private _http: HttpService,
@@ -34,13 +33,9 @@ export class PollsListComponent implements OnInit, OnDestroy {
         map((data) => this.polls = data),
         tap(() => this.onPollsLoaded())
       )
-    this.pollsSubscription = this.polls$.subscribe();
   }
 
   ngOnDestroy(): void {
-    if (this.pollsSubscription) {
-      this.pollsSubscription.unsubscribe();
-    }
   }
 
   onPollsLoaded(){

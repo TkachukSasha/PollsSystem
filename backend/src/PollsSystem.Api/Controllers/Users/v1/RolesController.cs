@@ -8,10 +8,11 @@ using PollsSystem.Presentation.Users.Roles;
 using PollsSystem.Presentation.Users.Roles.Requests;
 using PollsSystem.Shared.Dal.Repositories;
 
-namespace PollsSystem.Api.Controllers.Users;
+namespace PollsSystem.Api.Controllers.Users.v1;
 
 [Authorize(Policy = "admin")]
-[Route("api/roles")]
+[Route("api/v{version:apiVersion}/roles")]
+[ApiVersion("1.0")]
 public class RolesController : BaseController
 {
     private readonly IBaseRepository _repository;

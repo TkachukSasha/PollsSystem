@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.DependencyInjection;
 using PollsSystem.Presentation.Polls.External.Requests;
 using PollsSystem.Presentation.Polls.Holders.Requests;
@@ -18,6 +19,22 @@ public static class Extensions
         services.AddSingleton(GetConfigureMappingConfig());
 
         services.AddScoped<IMapper, ServiceMapper>();
+
+        services.AddApiVersioning(options =>
+        {
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+            options.ReportApiVersions = true;
+            options.ApiVersionReader = ApiVersionReader.Combine(
+                new HeaderApiVersionReader("x-version")
+            );
+        });
+
+        services.AddVersionedApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
+        });
 
         services.AddControllers();
 

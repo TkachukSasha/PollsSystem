@@ -27,7 +27,7 @@ public class SendRepliesValidator : AbstractValidator<SendReplies>
     }
 }
 
-public sealed record SendReplies(string PollGid, string FirstName, string LastName, Dictionary<string, string> QuestionAnswer) : ICommand<Guid>, IValidate
+public sealed record SendReplies(string PollGid, string FirstName, string LastName, Dictionary<string, string> QuestionAnswer) : ICommand<bool>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -42,7 +42,7 @@ public sealed record SendReplies(string PollGid, string FirstName, string LastNa
     }
 }
 
-public class SendRepliesHandler : ICommandHandler<SendReplies, Guid>
+public class SendRepliesHandler : ICommandHandler<SendReplies, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ISendRepliesChannel _channel;
@@ -58,7 +58,7 @@ public class SendRepliesHandler : ICommandHandler<SendReplies, Guid>
         _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
     }
 
-    public async ValueTask<Guid> Handle(SendReplies command, CancellationToken cancellationToken)
+    public async ValueTask<bool> Handle(SendReplies command, CancellationToken cancellationToken)
     {
         List<double> scores = new();
 
@@ -95,6 +95,6 @@ public class SendRepliesHandler : ICommandHandler<SendReplies, Guid>
 
         await _channel.AppyResultAsync(reply, cancellationToken);
 
-        return existingPoll.Gid;
+        return existingPoll.Gid != Guid.Empty ? true : false;
     }
 }

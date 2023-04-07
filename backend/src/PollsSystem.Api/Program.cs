@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.RateLimiting;
 using PollsSystem.Application;
 using PollsSystem.Persistence;
 using PollsSystem.Presentation;
@@ -21,6 +22,20 @@ builder.Services.AddApplication();
 builder.Services.AddPersistence();
 builder.Services.AddPresentation();
 
+builder.Services.AddRateLimiter(rateLimiterOptions =>
+{
+    rateLimiterOptions.AddSlidingWindowLimiter("sliding", options =>
+    {
+        options.PermitLimit = 10;
+        options.Window = TimeSpan.FromSeconds(10);
+        options.SegmentsPerWindow = 2;
+        options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 5;
+    });
+});
+
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -30,6 +45,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UsePresentation();
+
+app.MapHealthChecks("/health-check");
 
 app.UseShared();
 
