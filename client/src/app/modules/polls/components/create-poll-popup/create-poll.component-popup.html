@@ -1,0 +1,55 @@
+<div class="create__poll-wrapper">
+  <ul class="create__poll-tabs">
+    <li (click)="onTabClick('General Information')" class="create__poll-tab" [class.active]="activeTab === 'General Information'"
+    >General Information
+    </li>
+    <li (click)="onTabClick('Questions')" class="create__poll-tab" [class.active]="activeTab === 'Questions'"
+    >Questions</li>
+  </ul>
+  <form *ngIf="activeTab === 'General Information'" class="create__poll-general" [formGroup]="createPollForm">
+    <div class="create__poll-content">
+      <div class="create__item-wrap">
+        <input class="create__item-input" type="text" placeholder="Enter the title" formControlName="title">
+      </div>
+    </div>
+    <div class="create__poll-content">
+      <div class="create__item-wrap">
+        <input class="create__item-input" type="text" placeholder="Enter the Description" formControlName="description">
+      </div>
+    </div>
+    <div class="create__poll-content">
+      <div class="create__item-wrap">
+        <input class="create__item-input" type="text" placeholder="Enter the Number of questions" formControlName="numOfQuestions">
+      </div>
+    </div>
+    <div class="create__poll-content">
+      <div class="create__item-wrap">
+        <input class="create__item-input" type="text" placeholder="Enter the Duration" formControlName="duration">
+      </div>
+    </div>
+    <div class="create__poll-actions">
+      <button class="create__poll-actions-confrim" type="submit" (click)="handlePollCreation()">Next</button>
+      <button class="create__poll-actions-reject" type="submit" (click)="onReject()">Back</button>
+    </div>
+  </form>
+  <form *ngIf="activeTab === 'Questions'" class="create__poll-questions" [formGroup]="createQuestionsToPoll">
+    <div class="create__poll-questions-wrap">
+      <div class="create__question-wrap" *ngFor="let questionControl of createQuestionsToPoll.controls | keyvalue">
+        <div class="create__question-item-wrap">
+          <input class="create__question-item-input" type="text" placeholder="Enter the question name" formControlName="{{questionControl.key}}.question.text">
+          <mat-icon class="add__answer-icon" (click)="onAnswerAdd(questionControl.key)">add</mat-icon>
+        </div>
+        <div class="create__answer-wrap" [formArrayName]="questionControl.key + '.answers'">
+          <div class="create__answer-item-wrap" *ngFor="let answerControl of createQuestionsToPoll.get(questionControl.key)!.get('answers')['controls']; let i=index">
+            <input class="create__answer-item-input" type="text" placeholder="Enter the answer text" [formControlName]="'text'">
+            <mat-icon (click)="onAnswerRemove(questionControl.key, i)">remove</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="create__poll-actions">
+      <button class="create__poll-actions-confirm" type="submit">Submit</button>
+    </div>
+  </form>
+</div>
+

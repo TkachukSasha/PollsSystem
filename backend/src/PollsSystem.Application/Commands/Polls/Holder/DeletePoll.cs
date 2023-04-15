@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
@@ -18,7 +19,7 @@ public class DeletePollValidator : AbstractValidator<DeletePoll>
     }
 }
 
-public sealed record DeletePoll(string PollGid) : ICommand<Guid>, IValidate
+public sealed record DeletePoll(string PollGid) : ICommand<bool>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -33,26 +34,23 @@ public sealed record DeletePoll(string PollGid) : ICommand<Guid>, IValidate
     }
 }
 
-public class DeletePollHandler : ICommandHandler<DeletePoll, Guid>
+public class DeletePollHandler : BaseCommandHandler<DeletePoll, bool>
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly ITransactionalRepository _transactionalRepository;
-    private readonly IBaseRepository _baseRepository;
 
     public DeletePollHandler(
         IUnitOfWork unitOfWork,
         ITransactionalRepository transactionalRepository,
-        IBaseRepository baseRepository)
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _transactionalRepository = transactionalRepository ?? throw new ArgumentNullException(nameof(transactionalRepository));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
     }
 
-    public async ValueTask<Guid> Handle(DeletePoll command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(DeletePoll command, CancellationToken cancellationToken)
         => await _transactionalRepository.ExecuteTransactionAsync(ProcessPollDelete, command, cancellationToken);
 
-    private async ValueTask<Guid> ProcessPollDelete(
+    private async ValueTask<bool> ProcessPollDelete(
         DeletePoll command,
         CancellationToken cancellationToken)
     {
@@ -64,26 +62,52 @@ public class DeletePollHandler : ICommandHandler<DeletePoll, Guid>
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
                 $"Poll with: {command.PollGid} is null!");
 
-        var questions = await _baseRepository.GetEntitiesByConditionAsync<Question>(x => x.PollGid == Guid.Parse(command.PollGid));
-
-        if (questions.Any())
+        try
         {
-            foreach (var question in questions)
-            {
-                var answersCollection = await _baseRepository.GetEntitiesByConditionAsync<Answer>(x => x.QuestionGid == question.Gid);
+            var questions = await _baseRepository.GetEntitiesByConditionAsync<Question>(x => x.PollGid == Guid.Parse(command.PollGid));
 
-                answers = answersCollection.ToList();
-            }
+            return questions.Any() ? await DeleteAllRangeAsync(existingPoll, questions, cancellationToken)
+                                   : await DeletePollAsync(existingPoll, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
 
-            _baseRepository.DeleteRange<Answer>(answers);
+    private async ValueTask<bool> DeleteAllRangeAsync(
+        Poll poll,
+        IEnumerable<Question> questions,
+        CancellationToken cancellationToken)
+    {
+        List<Answer> answers = new();
 
-            _baseRepository.DeleteRange<Question>(questions);
+        foreach (var question in questions)
+        {
+            var answersCollection = await _baseRepository.GetEntitiesByConditionAsync<Answer>(x => x.QuestionGid == question.Gid);
 
-            _baseRepository.Delete<Poll>(existingPoll.Gid);
-
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            answers = answersCollection.ToList();
         }
 
-        return existingPoll.Gid;
+        _baseRepository.DeleteRange(answers);
+
+        _baseRepository.DeleteRange(questions);
+
+        _baseRepository.Delete<Poll>(poll.Gid);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return true;
+    }
+
+    private async ValueTask<bool> DeletePollAsync(
+        Poll poll,
+        CancellationToken cancellationToken)
+    {
+        _baseRepository.Delete<Poll>(poll.Gid);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 }

@@ -8,16 +8,42 @@
 </ngx-spinner>
 
 
-<app-search-bar (searchTextChanged)="onSearchTextEntered($event)"></app-search-bar>
+<app-search-bar
+  (searchTextChanged)="onSearchTextEntered($event)"
+></app-search-bar>
 
 <div class="polls__list" *ngIf="polls$ | async as polls">
   <app-my-poll-item
+    (pollTitleSelected)="onPollTitleSelected($event)"
+    (pollSelected)="onPollSelected($event)"
     *ngFor="let poll of polls | filterPolls: searchText"
     [poll]="poll">
   </app-my-poll-item>
 </div>
 
 <div class="polls__list-add">
-  <mat-icon class="polls__list-add-icon">add</mat-icon>
+  <mat-icon class="polls__list-add-icon" (click)="onCreatePoll()">add</mat-icon>
 </div>
+
+<app-create-poll-popup
+  (pollCreatingRejected)="onCreateReject($event)"
+  *ngIf="isCreateItemPopupShowed"
+>
+</app-create-poll-popup>
+
+<app-edit-poll-popup
+  (pollEditingRejected)="onEditReject($event)"
+  (pollEditingUpdated)="onUpdate($event)"
+  *ngIf="isEditItemPopupShowed"
+  [poll]="poll"
+>
+</app-edit-poll-popup>
+
+<app-delete-poll-popup
+  (pollDeleted)="onDeleted($event)"
+  (pollRejected)="onReject($event)"
+  *ngIf="isDeleteItemPopupShowed"
+  [poll]="poll"
+>
+</app-delete-poll-popup>
 

@@ -48,3 +48,24 @@ input{
   font-family: Roboto, "Helvetica Neue", sans-serif;
   font-size: 16px;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+  scrollbar-width: thin;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background:  #E5EAD9;
+}
+
+::-webkit-scrollbar-button:start,
+::-webkit-scrollbar-button:end {
+  height: 1vh;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border: 0.1rem solid #1A1E2B;
+  border-radius: 1.2rem;
+}

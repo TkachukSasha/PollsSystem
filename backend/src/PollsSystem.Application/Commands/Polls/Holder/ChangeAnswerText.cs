@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
@@ -41,20 +42,14 @@ public sealed record ChangeAnswerText(string QuestionGid, string AnswerGid, stri
     }
 }
 
-public class ChangeAnswerTextHandler : ICommandHandler<ChangeAnswerText, Guid>
+public class ChangeAnswerTextHandler : BaseCommandHandler<ChangeAnswerText, Guid>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
-
     public ChangeAnswerTextHandler(
         IUnitOfWork unitOfWork,
-        IBaseRepository baseRepository)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
-    }
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository) { }
 
-    public async ValueTask<Guid> Handle(ChangeAnswerText command, CancellationToken cancellationToken)
+    public override async ValueTask<Guid> Handle(ChangeAnswerText command, CancellationToken cancellationToken)
     {
         var existingQuestion = await _baseRepository.GetByConditionAsync<Question>(x => x.Gid == Guid.Parse(command.QuestionGid));
 

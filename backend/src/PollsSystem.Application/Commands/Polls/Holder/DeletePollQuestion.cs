@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
@@ -21,7 +22,7 @@ public class DeletePollQuestionValidator : AbstractValidator<DeletePollQuestion>
     }
 }
 
-public sealed record DeletePollQuestion(string PollGid, string QuestionGid) : ICommand<Guid>, IValidate
+public sealed record DeletePollQuestion(string PollGid, string QuestionGid) : ICommand<bool>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -36,30 +37,29 @@ public sealed record DeletePollQuestion(string PollGid, string QuestionGid) : IC
     }
 }
 
-public class DeletePollQuestionHandler : ICommandHandler<DeletePollQuestion, Guid>
+public class DeletePollQuestionHandler : BaseCommandHandler<DeletePollQuestion, bool>
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly ITransactionalRepository _transactionalRepository;
-    private readonly IBaseRepository _baseRepository;
 
     public DeletePollQuestionHandler(
         IUnitOfWork unitOfWork,
         ITransactionalRepository transactionalRepository,
-        IBaseRepository baseRepository)
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _transactionalRepository = transactionalRepository ?? throw new ArgumentNullException(nameof(transactionalRepository));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
     }
 
-    public async ValueTask<Guid> Handle(DeletePollQuestion command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(DeletePollQuestion command, CancellationToken cancellationToken)
         => await _transactionalRepository.ExecuteTransactionAsync(ProcessQuestionDelete, command, cancellationToken);
 
-    private async ValueTask<Guid> ProcessQuestionDelete(
+    private async ValueTask<bool> ProcessQuestionDelete(
         DeletePollQuestion command,
         CancellationToken cancellationToken)
     {
         var existingQuestion = await _baseRepository.GetByConditionAsync<Question>(x => x.PollGid == Guid.Parse(command.PollGid) && x.Gid == Guid.Parse(command.QuestionGid));
+
+        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == existingQuestion.PollGid);
 
         if (existingQuestion is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
@@ -69,8 +69,14 @@ public class DeletePollQuestionHandler : ICommandHandler<DeletePollQuestion, Gui
 
         _baseRepository.DeleteByCondition<Answer>(x => x.QuestionGid == questionGid);
 
+        var poll = Poll.ChangePollNumberOfQuestions(
+            existingPoll
+        );
+
+        _baseRepository.Update(poll);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return questionGid;
+        return questionGid == Guid.Empty ? false : true;
     }
 }

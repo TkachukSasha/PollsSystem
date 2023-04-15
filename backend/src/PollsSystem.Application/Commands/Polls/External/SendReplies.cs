@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Application.Common.Channels;
 using PollsSystem.Application.Dto;
@@ -42,23 +43,20 @@ public sealed record SendReplies(string PollGid, string FirstName, string LastNa
     }
 }
 
-public class SendRepliesHandler : ICommandHandler<SendReplies, bool>
+public class SendRepliesHandler : BaseCommandHandler<SendReplies, bool>
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly ISendRepliesChannel _channel;
-    private readonly IBaseRepository _baseRepository;
 
     public SendRepliesHandler(
         IUnitOfWork unitOfWork,
         ISendRepliesChannel channel,
-        IBaseRepository baseRepository)
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _channel = channel ?? throw new ArgumentNullException(nameof(channel));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
     }
 
-    public async ValueTask<bool> Handle(SendReplies command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(SendReplies command, CancellationToken cancellationToken)
     {
         List<double> scores = new();
 

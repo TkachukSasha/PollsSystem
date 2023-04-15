@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Users;
 using PollsSystem.Shared.Api.Exceptions;
@@ -33,20 +34,14 @@ public sealed record DeleteRole(Guid RoleGid) : ICommand<Guid>, IValidate
     }
 }
 
-public class DeleteRoleHandler : ICommandHandler<DeleteRole, Guid>
+public class DeleteRoleHandler : BaseCommandHandler<DeleteRole, Guid>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
-
     public DeleteRoleHandler(
         IUnitOfWork unitOfWork,
-        IBaseRepository baseRepository)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
-    }
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository) { }
 
-    public async ValueTask<Guid> Handle(DeleteRole command, CancellationToken cancellationToken)
+    public override async ValueTask<Guid> Handle(DeleteRole command, CancellationToken cancellationToken)
     {
         var existingRole = await _baseRepository.GetByConditionAsync<Role>(x => x.Gid == command.RoleGid);
 

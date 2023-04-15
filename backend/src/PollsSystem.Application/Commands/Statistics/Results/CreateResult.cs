@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Statistics;
 using PollsSystem.Shared.Api.Exceptions;
@@ -45,20 +46,14 @@ public sealed record CreateResult(double Score, double Percents, string FirstNam
     }
 }
 
-public class CreateResultHandler : ICommandHandler<CreateResult, Guid>
+public class CreateResultHandler : BaseCommandHandler<CreateResult, Guid>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
-
     public CreateResultHandler(
         IUnitOfWork unitOfWork,
-        IBaseRepository baseRepository)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
-    }
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository) { }
 
-    public async ValueTask<Guid> Handle(CreateResult command, CancellationToken cancellationToken)
+    public override async ValueTask<Guid> Handle(CreateResult command, CancellationToken cancellationToken)
     {
         var existingResult = await _baseRepository.GetByConditionAsync<Result>(x => x.PollGid == Guid.Parse(command.PollGid) && x.LastName == command.LastName);
 

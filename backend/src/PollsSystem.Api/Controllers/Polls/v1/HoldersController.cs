@@ -126,4 +126,14 @@ public class HoldersController : BaseController
 
         return Ok(await _mediator.Send(command, cancellationToken));
     }
+
+    [HttpDelete("delete-question-answer")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async ValueTask<IActionResult> DeletePollQuestion([FromBody] DeleteQuestionAnswerRequest request, CancellationToken cancellationToken)
+    {
+        DeleteQuestionAnswer command = request.Adapt<DeleteQuestionAnswer>();
+
+        return Ok(await _mediator.Send(command, cancellationToken));
+    }
 }

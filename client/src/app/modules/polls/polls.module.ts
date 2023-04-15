@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, Location} from '@angular/common';
 import { PollsListComponent } from './pages/polls-list/polls-list.component';
 import { PollsItemComponent } from './components/polls-item/polls-item.component';
 import { PollsRoutingModule } from "./polls-routing.module";
 import { SharedModule } from "../../shared/shared.module";
-import { FormsModule } from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
 import { FilterPollsPipe } from "./pipes/filter-polls.pipe";
 import { NgxSpinnerModule } from "ngx-spinner";
@@ -16,6 +16,10 @@ import { MyPollItemComponent } from './components/my-poll-item/my-poll-item.comp
 import { PollPassThanksgivingComponent } from './pages/poll-pass-thanksgiving/poll-pass-thanksgiving.component';
 import { ExistResultPopupComponent } from './components/exist-result-popup/exist-result-popup.component';
 import { TimeOverPopupComponent } from './components/time-over-popup/time-over-popup.component';
+import { CreatePollComponentPopup } from "./components/create-poll-popup/create-poll.component-popup";
+import { EditPollComponentPopup } from "./components/edit-poll-popup/edit-poll.component-popup";
+import { DeletePollPopupComponent } from "./components/delete-poll-popup/delete-poll-popup.component";
+import { PollStatisticsComponent } from './pages/poll-statistics/poll-statistics.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +33,11 @@ import { TimeOverPopupComponent } from './components/time-over-popup/time-over-p
     MyPollItemComponent,
     PollPassThanksgivingComponent,
     ExistResultPopupComponent,
-    TimeOverPopupComponent
+    TimeOverPopupComponent,
+    CreatePollComponentPopup,
+    EditPollComponentPopup,
+    DeletePollPopupComponent,
+    PollStatisticsComponent
   ],
     imports: [
         CommonModule,
@@ -37,10 +45,14 @@ import { TimeOverPopupComponent } from './components/time-over-popup/time-over-p
         SharedModule,
         FormsModule,
         MatIconModule,
-        NgxSpinnerModule
+        NgxSpinnerModule,
+        ReactiveFormsModule
     ],
   exports: [
     FilterPollsPipe
+  ],
+  providers: [
+    Location
   ]
 })
 export class PollsModule { }

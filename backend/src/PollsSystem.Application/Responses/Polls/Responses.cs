@@ -1,6 +1,6 @@
 ﻿namespace PollsSystem.Application.Responses.Polls;
 
-public record PollResponse(Guid Gid, string Title, string Description, int NumberOfQuestions, int Duration);
+public record PollResponse(Guid Gid, string Title, string Description, int NumberOfQuestions, int Duration, string Key);
 
 public record QuestionsWithAnswersResponse(Guid Gid, string QuestionName, List<AnswerResponse> Answers);
 

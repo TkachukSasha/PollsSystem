@@ -9,18 +9,21 @@ import { MatIconModule } from "@angular/material/icon";
 import { NgxSpinnerModule } from "ngx-spinner";
 
 @NgModule({
-  declarations: [
-    AccountsSettingsComponent,
-    EditUsernamePopupComponent,
-    EditPasswordPopupComponent
-  ],
-  imports: [
-    CommonModule,
-    AccountsSettingsRoutingModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    FormsModule,
-    NgxSpinnerModule
-  ]
+    declarations: [
+        AccountsSettingsComponent,
+        EditUsernamePopupComponent,
+        EditPasswordPopupComponent
+    ],
+    exports: [
+        EditPasswordPopupComponent
+    ],
+    imports: [
+        CommonModule,
+        AccountsSettingsRoutingModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        FormsModule,
+        NgxSpinnerModule
+    ]
 })
 export class AccountsSettingsModule { }

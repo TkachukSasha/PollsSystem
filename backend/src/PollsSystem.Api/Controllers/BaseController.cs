@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace PollsSystem.Api.Controllers;
 
 [ApiController]
-[ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new string[] { "latest" })]
+//[ResponseCache(Duration = 30, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new string[] { "latest" })]
 public class BaseController : ControllerBase
 {
     protected readonly IMediator _mediator;

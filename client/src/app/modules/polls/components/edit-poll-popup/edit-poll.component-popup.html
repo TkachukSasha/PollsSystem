@@ -1,0 +1,93 @@
+<div class="edit__poll-wrapper">
+    <ul class="edit__poll-tabs">
+      <li (click)="onTabClick('General Information')" class="edit__poll-tab" [class.active]="activeTab === 'General Information'"
+      >General Information
+      </li>
+      <li (click)="onTabClick('Questions')" class="edit__poll-tab" [class.active]="activeTab === 'Questions'"
+      >Questions</li>
+    </ul>
+  <div *ngIf="activeTab === 'General Information'" class="edit__poll-general">
+    <div class="edit__poll-content">
+      <h3 class="edit__poll-title">Current title:</h3>
+      <div class="edit__item-wrap">
+        <div class="edit__item-input-wrap">
+          <input class="edit__item-input" type="text" [(ngModel)]="poll.title" [disabled]="isDisabled">
+        </div>
+        <mat-icon class="edit__item-icon" (click)="onTitleChange()">update</mat-icon>
+      </div>
+    </div>
+    <div class="edit__poll-content">
+      <h3 class="edit__poll-title">Current Description:</h3>
+      <div class="edit__item-wrap">
+        <div class="edit__item-input-wrap">
+          <input class="edit__item-input" type="text" [(ngModel)]="poll.description" [disabled]="isDisabled">
+        </div>
+        <mat-icon class="edit__item-icon" (click)="onDescriptionChange()">update</mat-icon>
+      </div>
+    </div>
+    <div class="edit__poll-content">
+      <h3 class="edit__poll-title">Current Number Of Questions:</h3>
+      <div class="edit__item-wrap">
+        <div class="edit__item-input-wrap">
+          <input class="edit__item-input" type="text" [(ngModel)]="poll.numberOfQuestions" [disabled]="isDisabled">
+        </div>
+      </div>
+    </div>
+    <div class="edit__poll-content">
+      <h3 class="edit__poll-title">Current Duration:</h3>
+      <div class="edit__item-wrap">
+        <div class="edit__item-input-wrap">
+          <input class="edit__item-input" type="text" [(ngModel)]="poll.duration" [disabled]="isDisabled">
+        </div>
+        <mat-icon class="edit__item-icon" (click)="onDurationChange()">update</mat-icon>
+      </div>
+    </div>
+    <div class="edit__poll-content">
+      <h3 class="edit__poll-title">Current Key:</h3>
+      <div class="edit__item-wrap">
+        <div class="edit__item-input-wrap">
+          <input class="edit__item-input" type="text" [(ngModel)]="poll.key" [disabled]="isDisabled">
+        </div>
+        <mat-icon class="edit__item-icon" (click)="onKeyChange()">update</mat-icon>
+      </div>
+    </div>
+    <div class="edit__poll-actions">
+      <button class="edit__poll-actions-reject" type="submit" (click)="onReject()">Back</button>
+    </div>
+  </div>
+  <div *ngIf="activeTab === 'Questions'" class="edit__poll-questions">
+    <div *ngFor="let question of questions">
+      <div class="question__item-wrapper">
+        <div class="question__item-general">
+          <h3 class="question__item-title">Question:</h3>
+        </div>
+        <div class="question__item-content">
+          <div class="edit__item-input-wrap">
+            <input class="edit__item-input" type="text" [(ngModel)]="question.questionName" [disabled]="isDisabled">
+          </div>
+          <div class="edit__item-icons">
+            <mat-icon class="edit__item-icon" (click)="onQuestionTextChange(question.gid, question.questionName)">update</mat-icon>
+            <mat-icon class="edit__item-icon" (click)="onQuestionRemove(question.gid)">remove</mat-icon>
+          </div>
+        </div>
+        <div class="answer__item-general">
+          <h3 class="answer__item-title">Answers:</h3>
+        </div>
+        <div *ngFor="let answer of question.answers">
+          <div class="answer__items-content">
+            <div class="edit__item-input-wrap">
+              <input class="edit__item-input" type="text" [(ngModel)]="answer.answerName" [disabled]="isDisabled">
+            </div>
+            <div class="edit__item-icons">
+              <mat-icon class="edit__item-icon" (click)="onAnswerTextChange(question.gid, answer.gid, answer.answerName)">update</mat-icon>
+              <mat-icon class="edit__item-icon" (click)="onAnswerRemove(question.gid, answer.gid)">remove</mat-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="edit__poll-actions">
+      <button class="edit__poll-actions-reject" type="submit" (click)="onReject()">Back</button>
+    </div>
+  </div>
+</div>

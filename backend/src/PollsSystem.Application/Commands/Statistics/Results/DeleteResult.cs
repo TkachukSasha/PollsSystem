@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Statistics;
 using PollsSystem.Shared.Api.Exceptions;
@@ -36,20 +37,14 @@ public sealed record DeleteResult(string PollGid, string ResultGid) : ICommand<G
     }
 }
 
-public class DeleteResultHandler : ICommandHandler<DeleteResult, Guid>
+public class DeleteResultHandler : BaseCommandHandler<DeleteResult, Guid>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
-
     public DeleteResultHandler(
         IUnitOfWork unitOfWork,
-        IBaseRepository baseRepository)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
-    }
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository) { }
 
-    public async ValueTask<Guid> Handle(DeleteResult command, CancellationToken cancellationToken)
+    public override async ValueTask<Guid> Handle(DeleteResult command, CancellationToken cancellationToken)
     {
         var existingResult = await _baseRepository.GetByConditionAsync<Result>(x => x.Gid == Guid.Parse(command.ResultGid) && x.PollGid == Guid.Parse(command.PollGid));
 

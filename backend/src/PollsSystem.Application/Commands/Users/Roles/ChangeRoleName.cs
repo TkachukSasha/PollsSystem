@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Users;
 using PollsSystem.Shared.Api.Exceptions;
@@ -36,20 +37,14 @@ public sealed record ChangeRoleName(string CurrentName, string Name) : ICommand<
     }
 }
 
-public class ChangeRoleNameHandler : ICommandHandler<ChangeRoleName, Guid>
+public class ChangeRoleNameHandler : BaseCommandHandler<ChangeRoleName, Guid>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
-
     public ChangeRoleNameHandler(
         IUnitOfWork unitOfWork,
-        IBaseRepository baseRepository)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
-    }
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository) { }
 
-    public async ValueTask<Guid> Handle(ChangeRoleName command, CancellationToken cancellationToken)
+    public override async ValueTask<Guid> Handle(ChangeRoleName command, CancellationToken cancellationToken)
     {
         bool? isRoleNameUnique = await _baseRepository.IsFieldUniqueAsync<Role>(x => x.Name == command.Name);
 

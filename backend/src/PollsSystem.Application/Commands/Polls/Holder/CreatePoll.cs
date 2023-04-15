@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Dal.Repositories;
@@ -7,6 +8,8 @@ using PollsSystem.Shared.Dal.Utils;
 using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Polls.Holder;
+
+public record PollCreatingResponse(bool Status, string PollGid);
 
 public class CreatePollValidator : AbstractValidator<CreatePoll>
 {
@@ -35,7 +38,7 @@ public class CreatePollValidator : AbstractValidator<CreatePoll>
     }
 }
 
-public sealed record CreatePoll(string Title, string Description, int NumberOfQuestions, int Duration, string AuthorGid) : ICommand<string>, IValidate
+public sealed record CreatePoll(string Title, string Description, int NumberOfQuestions, int Duration, string AuthorGid) : ICommand<PollCreatingResponse>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -50,20 +53,14 @@ public sealed record CreatePoll(string Title, string Description, int NumberOfQu
     }
 }
 
-public class CreatePollHandler : ICommandHandler<CreatePoll, string>
+public class CreatePollHandler : BaseCommandHandler<CreatePoll, PollCreatingResponse>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
-
     public CreatePollHandler(
-        IUnitOfWork unitOfWork,
-        IBaseRepository baseRepository)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
-    }
+         IUnitOfWork unitOfWork,
+         IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository) { }
 
-    public async ValueTask<string> Handle(CreatePoll command, CancellationToken cancellationToken)
+    public override async ValueTask<PollCreatingResponse> Handle(CreatePoll command, CancellationToken cancellationToken)
     {
         var isTitleUnique = await _baseRepository.IsFieldUniqueAsync<Poll>(x => x.Title == command.Title);
 
@@ -83,6 +80,6 @@ public class CreatePollHandler : ICommandHandler<CreatePoll, string>
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return poll.Key;
+        return !string.IsNullOrWhiteSpace(poll.Key) ? new PollCreatingResponse(true, poll.Gid.ToString()) : new PollCreatingResponse(false, "");
     }
 }

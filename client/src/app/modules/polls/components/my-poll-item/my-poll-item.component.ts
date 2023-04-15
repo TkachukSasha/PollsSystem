@@ -9,12 +9,22 @@ import { IPoll } from "../../models/poll-model";
 })
 export class MyPollItemComponent implements OnInit {
   @Input() poll: IPoll
+  @Output()
+  pollTitleSelected: EventEmitter<string> = new EventEmitter<string>();
+  @Output()
+  pollSelected: EventEmitter<string> = new EventEmitter<string>();
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  onCardClick(){
+  onTitleClick(){
+    console.log(`selected`)
+    this.pollTitleSelected.emit(this.poll.gid);
+  }
+
+  onDeletePoll(){
+    this.pollSelected.emit(this.poll.gid);
   }
 }

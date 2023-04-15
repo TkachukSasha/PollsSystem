@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Users;
 using PollsSystem.Shared.Api.Exceptions;
@@ -42,23 +43,20 @@ public sealed record ChangePassword(string UserGid, string CurrentPassword, stri
     }
 }
 
-public class ChangePasswordHandler : ICommandHandler<ChangePassword, bool>
+public class ChangePasswordHandler : BaseCommandHandler<ChangePassword, bool>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
     private readonly IPasswordManager _passwordManager;
 
     public ChangePasswordHandler(
        IUnitOfWork unitOfWork,
        IPasswordManager passwordManager,
-       IBaseRepository baseRepository)
+       IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _passwordManager = passwordManager ?? throw new ArgumentNullException(nameof(passwordManager));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
     }
 
-    public async ValueTask<bool> Handle(ChangePassword command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(ChangePassword command, CancellationToken cancellationToken)
     {
         var userGid = Guid.Parse(command.UserGid);
 

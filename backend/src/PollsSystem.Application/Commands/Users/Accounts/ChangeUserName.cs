@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Users;
 using PollsSystem.Shared.Api.Exceptions;
@@ -38,20 +39,14 @@ public sealed record ChangeUserName(string CurrentUserName, string UserName) : I
     }
 }
 
-public class ChangeUserNameHandler : ICommandHandler<ChangeUserName, bool>
+public class ChangeUserNameHandler : BaseCommandHandler<ChangeUserName, bool>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
-
     public ChangeUserNameHandler(
         IUnitOfWork unitOfWork,
-        IBaseRepository baseRepository)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
-    }
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository) { }
 
-    public async ValueTask<bool> Handle(ChangeUserName command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(ChangeUserName command, CancellationToken cancellationToken)
     {
         var existingUser = await _baseRepository.GetByConditionAsync<User>(x => x.UserName == command.CurrentUserName);
 

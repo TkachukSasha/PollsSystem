@@ -1,6 +1,6 @@
 <div class="poll__item-wrapper">
-  <div class="poll__item-card" (click)="onCardClick()">
-    <div class="poll__item-content">
+  <div class="poll__item-card">
+    <div class="poll__item-content" (click)="onTitleClick()">
       <h1 class="poll__item-title">{{poll.title}}</h1>
     </div>
     <div class="poll__item-icons">
@@ -11,7 +11,7 @@
         <mat-icon class="poll__item-cloud">cloud_download</mat-icon>
       </div>
       <div class="poll__item-delete-wrapper">
-        <mat-icon class="poll__item-delete">delete</mat-icon>
+        <mat-icon class="poll__item-delete" (click)="onDeletePoll()">delete</mat-icon>
       </div>
     </div>
   </div>

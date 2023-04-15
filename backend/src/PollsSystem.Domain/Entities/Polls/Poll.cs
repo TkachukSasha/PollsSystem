@@ -110,14 +110,23 @@ public class Poll : Entity
         return poll;
     }
 
+    public static Poll ChangePollNumberOfQuestions(
+        Poll poll)
+    {
+        poll.NumberOfQuestions -= 1;
+
+        return poll;
+    }
+
     public static Poll RegenerateKey(
         Poll poll,
-        string keyRequest)
+        string newKey)
     {
-        if (poll.Key.Equals(keyRequest))
-            return poll;
+        if (poll.Key == newKey)
+            throw new BaseException(ExceptionCodes.ValueAlreadyExist,
+                $"Key: {newKey} already exist!");
 
-        var key = Key.Init(keyRequest);
+        var key = Key.Init(newKey);
 
         poll.Key = key;
 

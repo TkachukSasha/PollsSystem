@@ -43,7 +43,10 @@ export class HttpService{
           .pipe(catchError(async (err) => this.handleError(err, this)));
         break;
       case ApiMethod.DELETE:
-        response = this.http.delete(`${environment.apiUrl}${endpoint}`, data)
+        response = this.http.delete(`${environment.apiUrl}${endpoint}`, {
+          headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+          body: data
+        })
           .pipe(catchError(async (err) => this.handleError(err, this)));
         break;
       default:

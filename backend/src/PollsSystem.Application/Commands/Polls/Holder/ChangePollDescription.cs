@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
@@ -17,13 +18,13 @@ public class ChangePollDescriptionValidator : AbstractValidator<ChangePollDescri
             .NotNull();
 
         RuleFor(x => x.Description)
-            .MinimumLength(64)
+            .MinimumLength(8)
             .MaximumLength(564)
             .NotNull();
     }
 }
 
-public sealed record ChangePollDescription(string PollGid, string Description) : ICommand<Guid>, IValidate
+public sealed record ChangePollDescription(string PollGid, string Description) : ICommand<bool>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -38,20 +39,14 @@ public sealed record ChangePollDescription(string PollGid, string Description) :
     }
 }
 
-public class ChangePollDescriptionHandler : ICommandHandler<ChangePollDescription, Guid>
+public class ChangePollDescriptionHandler : BaseCommandHandler<ChangePollDescription, bool>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
-
     public ChangePollDescriptionHandler(
         IUnitOfWork unitOfWork,
-        IBaseRepository baseRepository)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
-    }
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository) { }
 
-    public async ValueTask<Guid> Handle(ChangePollDescription command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(ChangePollDescription command, CancellationToken cancellationToken)
     {
         var isDesciptionUnique = await _baseRepository.IsFieldUniqueAsync<Poll>(x => x.Description == command.Description);
 
@@ -71,6 +66,6 @@ public class ChangePollDescriptionHandler : ICommandHandler<ChangePollDescriptio
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return poll.Gid;
+        return poll.Description == command.Description ? true : false;
     }
 }

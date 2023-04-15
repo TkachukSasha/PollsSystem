@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
@@ -66,24 +67,20 @@ public record QuestionDto(string QuestionName, List<AnswerDto> Answers);
 
 public record AnswerDto(string AnswerText, string ScoreGid);
 
-public class CreatePollQuestionsHandler : ICommandHandler<CreatePollQuestions, Guid>
+public class CreatePollQuestionsHandler : BaseCommandHandler<CreatePollQuestions, Guid>
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly ITransactionalRepository _transactionalRepository;
-    private readonly IBaseRepository _baseRepository;
 
     public CreatePollQuestionsHandler(
         IUnitOfWork unitOfWork,
         ITransactionalRepository transactionalRepository,
-        IBaseRepository baseRepository)
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository)
     {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _transactionalRepository = transactionalRepository ?? throw new ArgumentNullException(nameof(transactionalRepository));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
     }
 
-
-    public async ValueTask<Guid> Handle(CreatePollQuestions command, CancellationToken cancellationToken)
+    public override async ValueTask<Guid> Handle(CreatePollQuestions command, CancellationToken cancellationToken)
           => await _transactionalRepository.ExecuteTransactionAsync(ProcessQuestionsAndAnswersCreation, command, cancellationToken);
 
     private async ValueTask<Guid> ProcessQuestionsAndAnswersCreation(

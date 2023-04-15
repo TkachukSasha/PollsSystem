@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Users;
 using PollsSystem.Shared.Api.Exceptions;
@@ -33,20 +34,14 @@ public sealed record DeleteAccount(string UserGid) : ICommand<bool>, IValidate
     }
 }
 
-public class DeleteAccountHandler : ICommandHandler<DeleteAccount, bool>
+public class DeleteAccountHandler : BaseCommandHandler<DeleteAccount, bool>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
-
     public DeleteAccountHandler(
         IUnitOfWork unitOfWork,
-        IBaseRepository baseRepository)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
-    }
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository) { }
 
-    public async ValueTask<bool> Handle(DeleteAccount command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(DeleteAccount command, CancellationToken cancellationToken)
     {
         var userGid = Guid.Parse(command.UserGid);
 

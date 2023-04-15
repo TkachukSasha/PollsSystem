@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
@@ -16,16 +17,13 @@ public class ChangePollTitleValidator : AbstractValidator<ChangePollTitle>
         RuleFor(x => x.PollGid)
             .NotNull();
 
-        RuleFor(x => x.CurrentTitle)
-            .NotNull();
-
         RuleFor(x => x.Title)
             .MinimumLength(8)
             .NotNull();
     }
 }
 
-public sealed record ChangePollTitle(string PollGid, string CurrentTitle, string Title) : ICommand<Guid>, IValidate
+public sealed record ChangePollTitle(string PollGid, string Title) : ICommand<bool>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -40,28 +38,22 @@ public sealed record ChangePollTitle(string PollGid, string CurrentTitle, string
     }
 }
 
-public class ChangePollTitleHandler : ICommandHandler<ChangePollTitle, Guid>
+public class ChangePollTitleHandler : BaseCommandHandler<ChangePollTitle, bool>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
-
     public ChangePollTitleHandler(
         IUnitOfWork unitOfWork,
-        IBaseRepository baseRepository)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
-    }
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository) { }
 
-    public async ValueTask<Guid> Handle(ChangePollTitle command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(ChangePollTitle command, CancellationToken cancellationToken)
     {
         var isTitleUnique = await _baseRepository.IsFieldUniqueAsync<Poll>(x => x.Title == command.Title);
 
-        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Title == command.CurrentTitle);
+        var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == Guid.Parse(command.PollGid));
 
         if (existingPoll is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
-                $"Poll with: {command.CurrentTitle} is null!");
+                $"Poll with: {command.Title} is null!");
 
         var poll = Poll.ChangePollTitle(
                existingPoll,
@@ -73,7 +65,7 @@ public class ChangePollTitleHandler : ICommandHandler<ChangePollTitle, Guid>
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return poll.Gid;
+        return poll.Title == command.Title ? true : false;
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
@@ -22,7 +23,7 @@ public class ChangePollDurationValidator : AbstractValidator<ChangePollDuration>
     }
 }
 
-public sealed record ChangePollDuration(string PollGid, int Duration) : ICommand<Guid>, IValidate
+public sealed record ChangePollDuration(string PollGid, int Duration) : ICommand<bool>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -37,20 +38,14 @@ public sealed record ChangePollDuration(string PollGid, int Duration) : ICommand
     }
 }
 
-public class ChangePollDurationHandler : ICommandHandler<ChangePollDuration, Guid>
+public class ChangePollDurationHandler : BaseCommandHandler<ChangePollDuration, bool>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
-
     public ChangePollDurationHandler(
         IUnitOfWork unitOfWork,
-        IBaseRepository baseRepository)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
-    }
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository) { }
 
-    public async ValueTask<Guid> Handle(ChangePollDuration command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(ChangePollDuration command, CancellationToken cancellationToken)
     {
         var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == Guid.Parse(command.PollGid));
 
@@ -67,6 +62,6 @@ public class ChangePollDurationHandler : ICommandHandler<ChangePollDuration, Gui
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return poll.Gid;
+        return poll.Duration == command.Duration ? true : false;
     }
 }

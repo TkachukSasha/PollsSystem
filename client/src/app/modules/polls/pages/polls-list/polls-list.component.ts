@@ -4,6 +4,7 @@ import {HttpService} from "../../../../core/services/http/http-service";
 import {ApiMethod} from "../../../../core/enums/api-methods";
 import {map, Observable, Subscription, tap} from "rxjs";
 import {NgxSpinnerService} from "ngx-spinner";
+import {StorageService} from "../../../../core/services/storage/storage-service";
 
 @Component({
   selector: 'app-polls-list',
@@ -19,20 +20,26 @@ export class PollsListComponent implements OnInit, OnDestroy {
   poll: IPoll;
   polls: IPoll[];
   polls$: Observable<IPoll[]>;
+  pollsSubscription: Subscription[] = [];
 
   constructor(
     private _http: HttpService,
+    private _storage: StorageService,
     private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit(): void {
     this.spinner.show();
     // @ts-ignore
-    this.polls$ = this._http.requestCall<IPoll[]>(`/polls`, ApiMethod.GET)
-      .pipe(
-        map((data) => this.polls = data),
-        tap(() => this.onPollsLoaded())
-      )
+
+    this.pollsSubscription.push(
+      // @ts-ignore
+      this.polls$ = this._http.requestCall<IPoll[]>(`/polls`, ApiMethod.GET)
+        .pipe(
+          map((data) => this.polls = data),
+          tap(() => this.onPollsLoaded())
+        )
+    )
   }
 
   ngOnDestroy(): void {

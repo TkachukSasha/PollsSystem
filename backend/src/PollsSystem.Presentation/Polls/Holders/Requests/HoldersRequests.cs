@@ -10,9 +10,9 @@ public record ChangePollDurationRequest(string PollGid, int Duration);
 
 public record ChangePollKeyRequest(string PollGid, string CurrentKey);
 
-public record ChangePollTitleRequest(string PollGid, string CurrentTitle, string Title);
+public record ChangePollTitleRequest(string PollGid, string Title);
 
-public record ChangeQuestionTextRequest(string CurrentQuestion, string Question);
+public record ChangeQuestionTextRequest(string QuestionGid, string Question);
 
 public record CreatePollRequest(string Title, string Description, int NumberOfQuestions, int Duration, string AuthorGid);
 
@@ -21,6 +21,8 @@ public record CreatePollQuestionsRequest(string PollGid, List<QuestionDto> Quest
 public record DeletePollRequest(string PollGid);
 
 public record DeletePollQuestionRequest(string PollGid, string QuestionGid);
+
+public record DeleteQuestionAnswerRequest(string QuestionGid, string AnswerGid);
 
 public record GetPollQuery(string PollGid);
 

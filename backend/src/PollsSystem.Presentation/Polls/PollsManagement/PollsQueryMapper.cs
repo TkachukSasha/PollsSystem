@@ -11,7 +11,8 @@ public static class PollsQueryMapper
             poll.Title.Value,
             poll.Description.Value,
             poll.NumberOfQuestions.Value,
-            poll.Duration.Value
+            poll.Duration.Value,
+            poll.Key.Value
         );
 
     public static QuestionsWithAnswersResponse ToQuestionsWithAnswersResponse(this Question question, List<Answer> answers)

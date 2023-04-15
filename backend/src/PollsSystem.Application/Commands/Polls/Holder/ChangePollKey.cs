@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
+using PollsSystem.Application.Commands.Base;
 using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
@@ -21,7 +22,7 @@ public class ChangePollKeyValidator : AbstractValidator<ChangePollKey>
     }
 }
 
-public sealed record ChangePollKey(string PollGid, string CurrentKey) : ICommand<Guid>, IValidate
+public sealed record ChangePollKey(string PollGid, string CurrentKey) : ICommand<bool>, IValidate
 {
     public bool IsValid([NotNullWhen(false)] out ValidationError? error)
     {
@@ -36,20 +37,14 @@ public sealed record ChangePollKey(string PollGid, string CurrentKey) : ICommand
     }
 }
 
-public class ChangePollKeyHandler : ICommandHandler<ChangePollKey, Guid>
+public class ChangePollKeyHandler : BaseCommandHandler<ChangePollKey, bool>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IBaseRepository _baseRepository;
-
     public ChangePollKeyHandler(
         IUnitOfWork unitOfWork,
-        IBaseRepository baseRepository)
-    {
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _baseRepository = baseRepository ?? throw new ArgumentNullException(nameof(baseRepository));
-    }
+        IBaseRepository baseRepository
+    ) : base(unitOfWork, baseRepository) { }
 
-    public async ValueTask<Guid> Handle(ChangePollKey command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(ChangePollKey command, CancellationToken cancellationToken)
     {
         var existingPoll = await _baseRepository.GetByConditionAsync<Poll>(x => x.Gid == Guid.Parse(command.PollGid));
 
@@ -57,15 +52,17 @@ public class ChangePollKeyHandler : ICommandHandler<ChangePollKey, Guid>
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
                 $"Poll with: {command.PollGid} is null!");
 
+        var key = Guid.NewGuid().ToString("N");
+
         var poll = Poll.RegenerateKey(
                existingPoll,
-               command.CurrentKey
+               key
         );
 
         _baseRepository.Update(poll);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return poll.Gid;
+        return true;
     }
 }
