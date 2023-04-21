@@ -58,8 +58,19 @@ public sealed class Result : Entity
     {
         var score = ScoreValue.Init(scoreRequest);
 
+        var newPercentage = RecalculatePercents(result.Percents, result.Score.Value, scoreRequest);
+
         result.Score = score;
+
+        result.Percents = newPercentage;
 
         return result;
     }
+
+    public static double RecalculatePercents(
+        double oldPercentage,
+        double oldScore,
+        double newScore
+    )
+        => (oldPercentage / oldScore) * newScore;
 }

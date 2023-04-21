@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
 using Mediator;
 using PollsSystem.Application.Commands.Base;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Dal.Utils;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Polls.Holder;
 
@@ -23,20 +21,7 @@ public class ChangePollDurationValidator : AbstractValidator<ChangePollDuration>
     }
 }
 
-public sealed record ChangePollDuration(string PollGid, int Duration) : ICommand<bool>, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new ChangePollDurationValidator();
-
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
+public sealed record ChangePollDuration(string PollGid, int Duration) : ICommand<bool>;
 
 public class ChangePollDurationHandler : BaseCommandHandler<ChangePollDuration, bool>
 {

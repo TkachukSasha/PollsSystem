@@ -17,9 +17,6 @@ public class ExternalController : BaseController
     {
     }
 
-    [HttpGet("ping")]
-    public string Ping() => "pong";
-
     [HttpPost("send-replies")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

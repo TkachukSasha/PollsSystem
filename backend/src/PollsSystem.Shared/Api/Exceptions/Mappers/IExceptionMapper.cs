@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using PollsSystem.Shared.Api.Exceptions.Validation;
 using System.Collections.Concurrent;
 using System.Net;
 
@@ -24,6 +25,7 @@ internal sealed class ExceptionMapper : IExceptionMapper
         {
             BaseException => new ExceptionResponse(new Error(GetErrorCode(exception), exception.Message), HttpStatusCode.BadRequest),
             HttpRequestException _ => _communicationResponse,
+            ValidationException validException => new ExceptionResponse(new ValidationError(validException?.ValidationError.ValidationErrors), HttpStatusCode.Conflict),
             _ => _defaultResponse
         };
 

@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Mediator;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Application.Responses.Users;
 using PollsSystem.Domain.Entities.Users;
 using PollsSystem.Shared.Dal.Repositories;
@@ -8,7 +7,6 @@ using PollsSystem.Shared.Dal.Utils;
 using PollsSystem.Shared.Security.Cryptography;
 using PollsSystem.Shared.Security.Providers;
 using PollsSystem.Shared.Security.Storage;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Users.Accounts;
 
@@ -36,20 +34,7 @@ public class SignUpValidator : AbstractValidator<SignUp>
     }
 }
 
-public sealed record SignUp(string FirstName, string LastName, string UserName, string Password, Guid? RoleGid) : ICommand, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new SignUpValidator();
-
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
+public sealed record SignUp(string FirstName, string LastName, string UserName, string Password, Guid? RoleGid) : ICommand;
 
 public class SignUpHandler : ICommandHandler<SignUp>
 {

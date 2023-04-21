@@ -1,1 +1,25 @@
-<p>poll-statistics works!</p>
+<div class="poll__results-list" *ngIf="pollResults$ | async as results">
+  <h1 class="poll__results-title">Results</h1>
+  <app-poll-result-item
+    (pollResultLaunchSelected)="onResultLaunchSelected($event)"
+    (pollResultDeletedSelected)="onResultSelected($event)"
+    *ngFor="let result of results"
+    [result]="result">
+  </app-poll-result-item>
+</div>
+
+<app-delete-result-popup
+  (pollResultDeleted)="onDelete($event)"
+  (pollResultRejected)="onReject($event)"
+  *ngIf="isDeleteItemPopupShowed"
+  [result]="result"
+>
+</app-delete-result-popup>
+
+<app-edit-poll-result-popup
+  (pollResultEditingRejected)="onEditReject($event)"
+  (pollResultEditingUpdated)="onUpdate($event)"
+  *ngIf="isEditItemPopupShowed"
+  [result]="result"
+>
+</app-edit-poll-result-popup>

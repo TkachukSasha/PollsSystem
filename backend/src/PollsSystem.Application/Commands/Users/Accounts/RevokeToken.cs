@@ -1,13 +1,11 @@
 ﻿using FluentValidation;
 using Mediator;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Application.Responses.Users;
 using PollsSystem.Domain.Entities.Users;
 using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Security.Providers;
 using PollsSystem.Shared.Security.Storage;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Users.Accounts;
 
@@ -20,20 +18,7 @@ public class RevokeTokenValidator : AbstractValidator<RevokeToken>
     }
 }
 
-public sealed record RevokeToken(string UserGid) : ICommand, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new RevokeTokenValidator();
-
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
+public sealed record RevokeToken(string UserGid) : ICommand;
 
 public class RevokeTokenHandler : ICommandHandler<RevokeToken>
 {

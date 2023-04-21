@@ -1,0 +1,26 @@
+.poll__result-wrapper{
+  .poll__result-content{
+    display: flex;
+    justify-content: space-between;
+
+    .poll__result-data{
+      .poll__result-item{
+        font-size: 16px;
+        font-weight: lighter;
+        margin: 10px;
+
+        .poll__result-item_dop{
+          font-size: 16px;
+          font-weight: bold;
+          margin-right: 3px;
+        }
+      }
+
+      .poll__result-actions{
+        .poll__item-launch{
+          margin: 10px;
+        }
+      }
+    }
+  }
+}

@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
 using Mediator;
 using PollsSystem.Application.Commands.Base;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Statistics;
 using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Dal.Utils;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Statistics.Results;
 
@@ -25,29 +23,16 @@ public class ChangeResultScoreValidator : AbstractValidator<ChangeResultScore>
     }
 }
 
-public sealed record ChangeResultScore(string PollGid, string LastName, double Score) : ICommand<Guid>, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new ChangeResultScoreValidator();
+public sealed record ChangeResultScore(string PollGid, string LastName, double Score) : ICommand<bool>;
 
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
-
-public class ChangeResultScoreHandler : BaseCommandHandler<ChangeResultScore, Guid>
+public class ChangeResultScoreHandler : BaseCommandHandler<ChangeResultScore, bool>
 {
     public ChangeResultScoreHandler(
         IUnitOfWork unitOfWork,
         IBaseRepository baseRepository
     ) : base(unitOfWork, baseRepository) { }
 
-    public override async ValueTask<Guid> Handle(ChangeResultScore command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(ChangeResultScore command, CancellationToken cancellationToken)
     {
         var existingResult = await _baseRepository.GetByConditionAsync<Result>(x => x.PollGid == Guid.Parse(command.PollGid) && x.LastName == command.LastName);
 
@@ -68,6 +53,6 @@ public class ChangeResultScoreHandler : BaseCommandHandler<ChangeResultScore, Gu
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return result.Gid;
+        return true;
     }
 }

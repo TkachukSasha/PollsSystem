@@ -20,6 +20,9 @@ import { CreatePollComponentPopup } from "./components/create-poll-popup/create-
 import { EditPollComponentPopup } from "./components/edit-poll-popup/edit-poll.component-popup";
 import { DeletePollPopupComponent } from "./components/delete-poll-popup/delete-poll-popup.component";
 import { PollStatisticsComponent } from './pages/poll-statistics/poll-statistics.component';
+import { PollResultItemComponent } from './components/poll-result-item/poll-result-item.component';
+import { DeleteResultPopupComponent } from './components/delete-result-popup/delete-result-popup.component';
+import { EditPollResultPopupComponent } from './components/edit-poll-result-popup/edit-poll-result-popup.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +40,10 @@ import { PollStatisticsComponent } from './pages/poll-statistics/poll-statistics
     CreatePollComponentPopup,
     EditPollComponentPopup,
     DeletePollPopupComponent,
-    PollStatisticsComponent
+    PollStatisticsComponent,
+    PollResultItemComponent,
+    DeleteResultPopupComponent,
+    EditPollResultPopupComponent
   ],
     imports: [
         CommonModule,

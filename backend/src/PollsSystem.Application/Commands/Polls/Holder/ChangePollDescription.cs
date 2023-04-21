@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
 using Mediator;
 using PollsSystem.Application.Commands.Base;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Dal.Utils;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Polls.Holder;
 
@@ -24,20 +22,7 @@ public class ChangePollDescriptionValidator : AbstractValidator<ChangePollDescri
     }
 }
 
-public sealed record ChangePollDescription(string PollGid, string Description) : ICommand<bool>, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new ChangePollDescriptionValidator();
-
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
+public sealed record ChangePollDescription(string PollGid, string Description) : ICommand<bool>;
 
 public class ChangePollDescriptionHandler : BaseCommandHandler<ChangePollDescription, bool>
 {

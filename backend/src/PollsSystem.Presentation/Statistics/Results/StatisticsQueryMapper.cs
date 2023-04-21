@@ -7,11 +7,11 @@ public static class StatisticsQueryMapper
 {
     public static ResultResponse ToResultResponse(this Result result)
         => new ResultResponse(
-            result.Gid,
+            result.Gid.ToString(),
             result.Score.Value,
             result.Percents.Value,
             result.FirstName.Value,
             result.LastName.Value,
-            result.PollGid
+            result.PollGid.ToString()
         );
 }

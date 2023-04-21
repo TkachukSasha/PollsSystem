@@ -2,7 +2,7 @@
 
 public record ChangeAnswerScoreRequest(string QuestionGid, string AnswerGid, string ScoreGid);
 
-public record ChangeAnswerTextRequest(string QuestionGid, string AnswerGid, string Text);
+public record ChangeAnswerTextRequest(string QuestionGid, string AnswerGid, string AnswerName);
 
 public record ChangePollDescriptionRequest(string PollGid, string Description);
 
@@ -30,6 +30,6 @@ public record GetUserPollsQuery(string UserGid);
 
 public record GetPollByTitleQuery(string Title);
 
-public record QuestionDto(string QuestionName, List<AnswerDto> Answers);
+public record QuestionDto(string QuestionText, List<AnswerDto> Answers);
 
-public record AnswerDto(string AnswerText, Guid ScoreGid);
+public record AnswerDto(string AnswerText, string ScoreGid);

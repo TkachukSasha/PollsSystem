@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
 using Mediator;
 using PollsSystem.Application.Commands.Base;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Dal.Utils;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Polls.Holder;
 
@@ -25,7 +23,7 @@ public class QuestionDtoValidator : AbstractValidator<QuestionDto>
 {
     public QuestionDtoValidator()
     {
-        RuleFor(x => x.QuestionName)
+        RuleFor(x => x.QuestionText)
             .MinimumLength(6)
             .MaximumLength(124)
             .NotNull();
@@ -48,26 +46,13 @@ public class AnswerDtoValidator : AbstractValidator<AnswerDto>
     }
 }
 
-public sealed record CreatePollQuestions(string PollGid, List<QuestionDto> Questions) : ICommand<Guid>, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new CreatePollQuestionsValidator();
+public sealed record CreatePollQuestions(string PollGid, List<QuestionDto> Questions) : ICommand<bool>;
 
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
-
-public record QuestionDto(string QuestionName, List<AnswerDto> Answers);
+public record QuestionDto(string QuestionText, List<AnswerDto> Answers);
 
 public record AnswerDto(string AnswerText, string ScoreGid);
 
-public class CreatePollQuestionsHandler : BaseCommandHandler<CreatePollQuestions, Guid>
+public class CreatePollQuestionsHandler : BaseCommandHandler<CreatePollQuestions, bool>
 {
     private readonly ITransactionalRepository _transactionalRepository;
 
@@ -80,10 +65,10 @@ public class CreatePollQuestionsHandler : BaseCommandHandler<CreatePollQuestions
         _transactionalRepository = transactionalRepository ?? throw new ArgumentNullException(nameof(transactionalRepository));
     }
 
-    public override async ValueTask<Guid> Handle(CreatePollQuestions command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(CreatePollQuestions command, CancellationToken cancellationToken)
           => await _transactionalRepository.ExecuteTransactionAsync(ProcessQuestionsAndAnswersCreation, command, cancellationToken);
 
-    private async ValueTask<Guid> ProcessQuestionsAndAnswersCreation(
+    private async ValueTask<bool> ProcessQuestionsAndAnswersCreation(
        CreatePollQuestions command,
        CancellationToken cancellationToken)
     {
@@ -99,10 +84,10 @@ public class CreatePollQuestionsHandler : BaseCommandHandler<CreatePollQuestions
 
         foreach (var item in command.Questions)
         {
-            bool? isQuestionNameUnqiue = await _baseRepository.IsFieldUniqueAsync<Question>(x => x.QuestionName == item.QuestionName);
+            bool? isQuestionNameUnqiue = await _baseRepository.IsFieldUniqueAsync<Question>(x => x.QuestionName == item.QuestionText);
 
             var question = QuestionInit(
-                item.QuestionName,
+                item.QuestionText,
                 existingPoll.Gid,
                 isQuestionNameUnqiue.GetValueOrDefault()
             );
@@ -126,7 +111,7 @@ public class CreatePollQuestionsHandler : BaseCommandHandler<CreatePollQuestions
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return existingPoll.Gid;
+        return true;
     }
 
 

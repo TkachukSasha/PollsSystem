@@ -1,0 +1,12 @@
+<div class="poll__result-wrapper">
+  <div class="poll__result-content">
+    <p class="poll__result-data">
+      <span class="poll__result-item"><span class="poll__result-item_dop">Fio:</span>{{result.lastName}} {{result.firstName}}</span>
+      <span class="poll__result-item"><span class="poll__result-item_dop">Percents:</span> {{result.percents}}</span>
+    </p>
+    <div class="poll__result-actions">
+      <mat-icon class="poll__item-launch" (click)="onLaunch()">launch</mat-icon>
+      <mat-icon class="poll__item-delete" (click)="onDelete()">delete</mat-icon>
+    </div>
+  </div>
+</div>

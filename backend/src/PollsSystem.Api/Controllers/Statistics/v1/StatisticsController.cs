@@ -59,7 +59,7 @@ public class StatisticsController : BaseController
 
         var response = results?.Select(x => x?.ToResultResponse());
 
-        return results is null ? NoContent() : Ok(response?.OrderBy(x => x?.Percents));
+        return results is null ? NoContent() : Ok(response?.OrderByDescending(x => x?.Percents));
     }
 
     [HttpGet("result")]

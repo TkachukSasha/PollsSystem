@@ -14,6 +14,7 @@
 
 <div class="polls__list" *ngIf="polls$ | async as polls">
   <app-my-poll-item
+    (pollLaunchSelected)="onLaunchSelected($event)"
     (pollTitleSelected)="onPollTitleSelected($event)"
     (pollSelected)="onPollSelected($event)"
     *ngFor="let poll of polls | filterPolls: searchText"
@@ -26,6 +27,7 @@
 </div>
 
 <app-create-poll-popup
+  (pollQuestionsCreated)="onPollQuestionsCreated($event)"
   (pollCreatingRejected)="onCreateReject($event)"
   *ngIf="isCreateItemPopupShowed"
 >

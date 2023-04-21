@@ -28,21 +28,45 @@
       </div>
     </div>
     <div class="create__poll-actions">
-      <button class="create__poll-actions-confrim" type="submit" (click)="handlePollCreation()">Next</button>
+      <button class="create__poll-actions-confirm" type="submit" (click)="handlePollCreation()">Next</button>
       <button class="create__poll-actions-reject" type="submit" (click)="onReject()">Back</button>
     </div>
   </form>
-  <form *ngIf="activeTab === 'Questions'" class="create__poll-questions" [formGroup]="createQuestionsToPoll">
-    <div class="create__poll-questions-wrap">
-      <div class="create__question-wrap" *ngFor="let questionControl of createQuestionsToPoll.controls | keyvalue">
-        <div class="create__question-item-wrap">
-          <input class="create__question-item-input" type="text" placeholder="Enter the question name" formControlName="{{questionControl.key}}.question.text">
-          <mat-icon class="add__answer-icon" (click)="onAnswerAdd(questionControl.key)">add</mat-icon>
-        </div>
-        <div class="create__answer-wrap" [formArrayName]="questionControl.key + '.answers'">
-          <div class="create__answer-item-wrap" *ngFor="let answerControl of createQuestionsToPoll.get(questionControl.key)!.get('answers')['controls']; let i=index">
-            <input class="create__answer-item-input" type="text" placeholder="Enter the answer text" [formControlName]="'text'">
-            <mat-icon (click)="onAnswerRemove(questionControl.key, i)">remove</mat-icon>
+  <form *ngIf="activeTab === 'Questions'" class="create__poll-questions" [formGroup]="createQuestionsToPoll" (ngSubmit)="onSubmit()">
+    <div class="current__numOfQuestions">
+      <h3 class="current__numOfQuestions-test">Current number of questions: {{numOfQuestions}}</h3>
+    </div>
+    <div formArrayName="questions">
+      <div *ngFor="let question of questions().controls; let questionIndex=index">
+        <div class="create__question-item-wrapper" [formGroupName]="questionIndex">
+          <div class="create__question__item-general">
+            <h3 class="create__question__item-title">Question:</h3>
+          </div>
+          <div class="create__question__item-content">
+            <div class="create__question-item-wrap">
+              <input class="create__question-item-input" type="text" placeholder="Enter the question name" formControlName="questionText">
+            </div>
+            <div class="create__item-icons">
+              <mat-icon class="add__answer-icon" (click)="addQuestionAnswer(questionIndex)">add</mat-icon>
+            </div>
+          </div>
+          <div class="create__answer-item-general">
+            <h3 class="create__answer-item-title">Answers:</h3>
+          </div>
+          <div formArrayName="answers">
+            <div *ngFor="let answer of questionAnswers(questionIndex).controls; let answerIndex=index">
+              <div class="create__answer-content" [formGroupName]="answerIndex">
+                <div class="create__answer-item-wrap">
+                  <input class="create__answer-item-input" type="text" placeholder="Enter the answer text" formControlName="answerText">
+                </div>
+                <div class="create__item-icons">
+                  <select class="create__item-selector" formControlName="scoreGid">
+                    <option *ngFor="let score of scores" [value]="score.scoreGid">{{score.scoreValue}}</option>
+                  </select>
+                  <mat-icon class="create__item-icon" (click)="removeQuestionAnswer(questionIndex, answerIndex)">remove</mat-icon>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -50,6 +74,8 @@
     <div class="create__poll-actions">
       <button class="create__poll-actions-confirm" type="submit">Submit</button>
     </div>
+
+    {{this.createQuestionsToPoll.value | json}}
   </form>
 </div>
 

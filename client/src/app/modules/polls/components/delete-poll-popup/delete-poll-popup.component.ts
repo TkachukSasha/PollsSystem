@@ -12,7 +12,6 @@ import {Location} from "@angular/common";
   styleUrls: ['./delete-poll-popup.component.scss']
 })
 export class DeletePollPopupComponent implements OnInit {
-  polls: IPoll[];
   @Input() poll: IPoll;
   @Output()
   pollDeleted: EventEmitter<boolean> = new EventEmitter<boolean>();

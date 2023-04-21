@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
 using Mediator;
 using PollsSystem.Application.Commands.Base;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Dal.Utils;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Polls.Holder;
 
@@ -20,36 +18,23 @@ public class ChangeAnswerTextValidator : AbstractValidator<ChangeAnswerText>
         RuleFor(x => x.AnswerGid)
             .NotNull();
 
-        RuleFor(x => x.Text)
+        RuleFor(x => x.AnswerName)
             .MinimumLength(8)
             .MinimumLength(16)
             .NotNull();
     }
 }
 
-public sealed record ChangeAnswerText(string QuestionGid, string AnswerGid, string Text) : ICommand<Guid>, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new ChangeAnswerTextValidator();
+public sealed record ChangeAnswerText(string QuestionGid, string AnswerGid, string AnswerName) : ICommand<bool>;
 
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
-
-public class ChangeAnswerTextHandler : BaseCommandHandler<ChangeAnswerText, Guid>
+public class ChangeAnswerTextHandler : BaseCommandHandler<ChangeAnswerText, bool>
 {
     public ChangeAnswerTextHandler(
         IUnitOfWork unitOfWork,
         IBaseRepository baseRepository
     ) : base(unitOfWork, baseRepository) { }
 
-    public override async ValueTask<Guid> Handle(ChangeAnswerText command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(ChangeAnswerText command, CancellationToken cancellationToken)
     {
         var existingQuestion = await _baseRepository.GetByConditionAsync<Question>(x => x.Gid == Guid.Parse(command.QuestionGid));
 
@@ -63,15 +48,15 @@ public class ChangeAnswerTextHandler : BaseCommandHandler<ChangeAnswerText, Guid
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,
                 $"Answer with: {command.QuestionGid} && {command.AnswerGid} is null!");
 
-        if (existingAnswer.AnswerText == command.Text)
+        if (existingAnswer.AnswerText == command.AnswerName)
             throw new BaseException(ExceptionCodes.ValueAlreadyExist,
-                $"Answer with: {command.Text} is already exist!");
+                $"Answer with: {command.AnswerName} is already exist!");
 
-        bool? isAnswerTextUnique = await _baseRepository.IsFieldUniqueAsync<Answer>(x => x.QuestionGid == Guid.Parse(command.QuestionGid) && x.AnswerText == command.Text);
+        bool? isAnswerTextUnique = await _baseRepository.IsFieldUniqueAsync<Answer>(x => x.QuestionGid == Guid.Parse(command.QuestionGid) && x.AnswerText == command.AnswerName);
 
         var answer = Answer.ChangeAnswerText(
                 existingAnswer,
-                command.Text,
+                command.AnswerName,
                 isAnswerTextUnique.GetValueOrDefault()
         );
 
@@ -79,6 +64,6 @@ public class ChangeAnswerTextHandler : BaseCommandHandler<ChangeAnswerText, Guid
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return answer.Gid;
+        return answer.Gid != Guid.Empty ? true : false;
     }
 }

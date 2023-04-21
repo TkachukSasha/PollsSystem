@@ -1,0 +1,17 @@
+<div class="edit__poll__result-wrapper">
+  <h3 class="edit__poll__result-title">Result:</h3>
+  <div class="edit__poll__result-content">
+    <div class="edit__poll__result-content">
+      <div class="edit__item-input-wrap">
+        <input class="edit__item-input" type="text" [(ngModel)]="result.score">
+      </div>
+      <span class="edit__item-percentage">{{result.percents}}%</span>
+      <div class="edit__poll__result-icons">
+        <mat-icon class="edit__poll__result-icon" (click)="onScoreResultChange()">update</mat-icon>
+      </div>
+    </div>
+  </div>
+  <div class="edit__poll__result-actions">
+    <button class="edit__poll__result-actions-reject" type="submit" (click)="onReject()">Back</button>
+  </div>
+</div>

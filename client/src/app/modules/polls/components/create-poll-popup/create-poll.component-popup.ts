@@ -3,6 +3,8 @@ import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angul
 import {PollsService} from "../../services/polls-service.service";
 import {StorageService} from "../../../../core/services/storage/storage-service";
 import {CreatePoll} from "../../models/create-poll";
+import {IScore} from "../../models/score";
+import {CreatePollQuestions} from "../../models/create-poll-questions";
 
 @Component({
   selector: 'app-create-poll-popup',
@@ -16,9 +18,11 @@ export class CreatePollComponentPopup implements OnInit {
   numOfQuestions: number;
   createPollForm!: FormGroup;
   createQuestionsToPoll!: FormGroup;
-  questions = [];
+  scores: IScore[];
   @Output()
   pollCreatingRejected: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output()
+  pollQuestionsCreated: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,7 +39,52 @@ export class CreatePollComponentPopup implements OnInit {
       duration: ['', [Validators.required]]
     })
 
-    this.createQuestionsToPoll = this.formBuilder.group({});
+    this.createQuestionsToPoll = this.formBuilder.group({
+      questions: this.formBuilder.array([])
+    });
+
+    this._pollsService.getScores()
+      .subscribe((data) => this.scores = data);
+  }
+
+  questions(): FormArray {
+    return this.createQuestionsToPoll.get('questions') as FormArray;
+  }
+
+  newQuestion(): FormGroup {
+    return this.formBuilder.group({
+      questionText: '',
+      answers: this.formBuilder.array([])
+    });
+  }
+
+  addQuestion() {
+    this.questions().push(this.newQuestion());
+
+    this.cdr.detectChanges();
+  }
+
+  questionAnswers(questionIndex: number): FormArray {
+    return this.questions()
+      .at(questionIndex)
+      .get('answers') as FormArray;
+  }
+
+  newAnswer(): FormGroup {
+    return this.formBuilder.group({
+      answerText: '',
+      scoreGid: ''
+    });
+  }
+
+  addQuestionAnswer(questionIndex: number) {
+    this.questionAnswers(questionIndex).push(this.newAnswer());
+    this.cdr.detectChanges();
+  }
+
+  removeQuestionAnswer(questionIndex: number, answerIndex: number) {
+    this.questionAnswers(questionIndex).removeAt(answerIndex);
+    this.cdr.detectChanges();
   }
 
   onTabClick(name: string){
@@ -44,6 +93,10 @@ export class CreatePollComponentPopup implements OnInit {
 
   onReject(){
     this.pollCreatingRejected.emit(false);
+  }
+
+  onCreated(){
+    this.pollQuestionsCreated.emit(true);
   }
 
   handlePollCreation(){
@@ -62,12 +115,7 @@ export class CreatePollComponentPopup implements OnInit {
         if(data.status){
           this.pollGid = data.pollGid;
           for (let i = 0; i < this.numOfQuestions; i++) {
-            const questionId = Date.now().toString();
-            const question = this.formBuilder.group({
-              text: ['', Validators.required],
-              answers: this.formBuilder.array([]) // Define answers as a FormArray
-            });
-            this.createQuestionsToPoll.addControl(questionId, question);
+            this.addQuestion();
           }
           this.onTabClick('Questions');
           this.cdr.detectChanges();
@@ -75,15 +123,16 @@ export class CreatePollComponentPopup implements OnInit {
       })
   }
 
-  onAnswerAdd(questionId: string){
-    const answers = this.createQuestionsToPoll.get(questionId + '.answers') as FormArray;
-    answers.push(this.formBuilder.group({
-      text: ''
-    }));
-  }
+  onSubmit(){
+    let request = new CreatePollQuestions(this.pollGid, this.createQuestionsToPoll.value.questions);
 
-  onAnswerRemove(questionId: string, index: number) {
-    const answers = this.createQuestionsToPoll.get(questionId + '.answers') as FormArray;
-    answers.removeAt(index);
+    console.log(`request: ${JSON.stringify(request)}`)
+
+    this._pollsService.createPollQuestions(request)
+      .subscribe((data) => {
+        if(data)
+          this.onCreated();
+          location.reload();
+      })
   }
 }

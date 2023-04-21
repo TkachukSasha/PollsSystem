@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
 using Mediator;
 using PollsSystem.Application.Commands.Base;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Statistics;
 using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Dal.Utils;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Statistics.Results;
 
@@ -31,20 +29,7 @@ public class CreateResultValidator : AbstractValidator<CreateResult>
     }
 }
 
-public sealed record CreateResult(double Score, double Percents, string FirstName, string LastName, string PollGid) : ICommand<Guid>, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new CreateResultValidator();
-
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
+public sealed record CreateResult(double Score, double Percents, string FirstName, string LastName, string PollGid) : ICommand<Guid>;
 
 public class CreateResultHandler : BaseCommandHandler<CreateResult, Guid>
 {

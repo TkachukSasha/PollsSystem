@@ -1,11 +1,9 @@
 ﻿using FluentValidation;
 using Mediator;
 using PollsSystem.Application.Commands.Base;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Dal.Utils;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Polls.Holder;
 
@@ -38,20 +36,7 @@ public class CreatePollValidator : AbstractValidator<CreatePoll>
     }
 }
 
-public sealed record CreatePoll(string Title, string Description, int NumberOfQuestions, int Duration, string AuthorGid) : ICommand<PollCreatingResponse>, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new CreatePollValidator();
-
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
+public sealed record CreatePoll(string Title, string Description, int NumberOfQuestions, int Duration, string AuthorGid) : ICommand<PollCreatingResponse>;
 
 public class CreatePollHandler : BaseCommandHandler<CreatePoll, PollCreatingResponse>
 {

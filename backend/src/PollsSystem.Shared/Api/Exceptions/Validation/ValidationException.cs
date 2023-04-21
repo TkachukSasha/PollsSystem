@@ -1,4 +1,4 @@
-﻿namespace PollsSystem.Application.Commands.Validation;
+﻿namespace PollsSystem.Shared.Api.Exceptions.Validation;
 
 public sealed class ValidationException : Exception
 {

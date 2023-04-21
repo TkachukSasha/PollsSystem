@@ -1,0 +1,50 @@
+:host{
+  display: flex;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.delete__result-wrapper{
+  width: 30%;
+  box-shadow: 5px 5px 6px #ccc;
+  border-radius: 5px;
+  background-color: #E5EAD9;
+}
+
+.delete__result-title{
+  margin-top: 10px;
+  margin-bottom: 5px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.delete__result-actions{
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+
+  button{
+    padding: 10px 20px;
+    border: 0;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  .delete__result-actions-confrim{
+    color: #FFFFFF;
+    background-color: #2D2F2C;
+  }
+
+  .delete__result-actions-reject{
+    color: #FFFFFF;
+    background-color: #F08080;
+  }
+}

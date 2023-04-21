@@ -25,14 +25,9 @@
                  placeholder="Password"
                  formControlName="password"/>
         </div>
-        <div class="sign-up__input-wrap">
-          <input class="sign-up-input"
-                 placeholder="RepeatPassword"
-                 formControlName="repeatPassword"/>
-        </div>
       </div>
       <div class="sign-up__handle-submit">
-        <button class="sign-up__submit-button" type="submit" [disabled]="this.signUpForm.invalid">Sign Up</button>
+        <button class="sign-up__submit-button" type="submit">Sign Up</button>
         <div class="sign-up__handle-information">
           <span class="sign-up__information-text">Already have an account?</span>
           <a class="sign-up__ref" routerLink="">Sign-In</a>
@@ -40,5 +35,4 @@
       </div>
     </div>
   </form>
-
 </div>

@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
 using Mediator;
 using PollsSystem.Application.Commands.Base;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Polls;
 using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Dal.Utils;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Polls.Holder;
 
@@ -25,29 +23,16 @@ public class ChangeAnswerScoreValidator : AbstractValidator<ChangeAnswerScore>
     }
 }
 
-public sealed record ChangeAnswerScore(string QuestionGid, string AnswerGid, string ScoreGid) : ICommand<Guid>, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new ChangeAnswerScoreValidator();
+public sealed record ChangeAnswerScore(string QuestionGid, string AnswerGid, string ScoreGid) : ICommand<bool>;
 
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
-
-public class ChangeAnswerScoreHandler : BaseCommandHandler<ChangeAnswerScore, Guid>
+public class ChangeAnswerScoreHandler : BaseCommandHandler<ChangeAnswerScore, bool>
 {
     public ChangeAnswerScoreHandler(
         IUnitOfWork unitOfWork,
         IBaseRepository baseRepository
     ) : base(unitOfWork, baseRepository) { }
 
-    public override async ValueTask<Guid> Handle(ChangeAnswerScore command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(ChangeAnswerScore command, CancellationToken cancellationToken)
     {
         var existingQuestion = await _baseRepository.GetByConditionAsync<Question>(x => x.Gid == Guid.Parse(command.QuestionGid));
 
@@ -70,6 +55,6 @@ public class ChangeAnswerScoreHandler : BaseCommandHandler<ChangeAnswerScore, Gu
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return answer.Gid;
+        return true;
     }
 }

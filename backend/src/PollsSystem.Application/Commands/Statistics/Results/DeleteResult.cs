@@ -1,12 +1,10 @@
 ﻿using FluentValidation;
 using Mediator;
 using PollsSystem.Application.Commands.Base;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Statistics;
 using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Dal.Utils;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Statistics.Results;
 
@@ -22,29 +20,16 @@ public class DeleteResultValidator : AbstractValidator<DeleteResult>
     }
 }
 
-public sealed record DeleteResult(string PollGid, string ResultGid) : ICommand<Guid>, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new DeleteResultValidator();
+public sealed record DeleteResult(string PollGid, string ResultGid) : ICommand<bool>;
 
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
-
-public class DeleteResultHandler : BaseCommandHandler<DeleteResult, Guid>
+public class DeleteResultHandler : BaseCommandHandler<DeleteResult, bool>
 {
     public DeleteResultHandler(
         IUnitOfWork unitOfWork,
         IBaseRepository baseRepository
     ) : base(unitOfWork, baseRepository) { }
 
-    public override async ValueTask<Guid> Handle(DeleteResult command, CancellationToken cancellationToken)
+    public override async ValueTask<bool> Handle(DeleteResult command, CancellationToken cancellationToken)
     {
         var existingResult = await _baseRepository.GetByConditionAsync<Result>(x => x.Gid == Guid.Parse(command.ResultGid) && x.PollGid == Guid.Parse(command.PollGid));
 
@@ -56,6 +41,6 @@ public class DeleteResultHandler : BaseCommandHandler<DeleteResult, Guid>
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return resultGid;
+        return resultGid != Guid.Empty ? true : false;
     }
 }

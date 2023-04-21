@@ -62,7 +62,9 @@ public class PollsController : BaseController
     {
         var scores = await _repository.GetListAsync<Score>();
 
-        return Ok(scores);
+        var result = scores.Select(x => x?.ToScoreResponse()).ToList();
+
+        return Ok(result);
     }
 
     [HttpGet("key")]
@@ -96,7 +98,7 @@ public class PollsController : BaseController
 
         questions.ToList().ShuffleQuizQuestionsV1();
 
-        var responseList = new List<QuestionsWithAnswersResponse>();
+        var responseList = new List<QuestionsWithAnswersDefaultResponse>();
 
         List<Question> questionsList = questions.ToList();
         List<Answer> answers = questionsList.SelectMany(q => q.Answers).ToList();
@@ -105,6 +107,31 @@ public class PollsController : BaseController
         {
             var questionAnswers = answers.Where(a => a.QuestionGid == question.Gid).ToList();
             responseList.Add(question.ToQuestionsWithAnswersResponse(questionAnswers));
+        }
+
+        return Ok(responseList);
+    }
+
+    [HttpGet("questions-with-scores")]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async ValueTask<IActionResult> GetPollQuestionsWithScores([FromQuery] GetPollQuery query)
+    {
+        var pollGid = Guid.Parse(query.PollGid);
+
+        var questions = await _questionRepository.GetPollQuestionsWithAnswersAsync(pollGid);
+
+        questions.ToList().ShuffleQuizQuestionsV1();
+
+        var responseList = new List<QuestionsWithAnswersAndScoresResponse>();
+
+        List<Question> questionsList = questions.ToList();
+        List<Answer> answers = questionsList.SelectMany(q => q.Answers).ToList();
+
+        foreach (var question in questionsList)
+        {
+            var questionAnswers = answers.Where(a => a.QuestionGid == question.Gid).ToList();
+            responseList.Add(question.ToQuestionsWithAnswersWithScoresResponse(questionAnswers));
         }
 
         return Ok(responseList);

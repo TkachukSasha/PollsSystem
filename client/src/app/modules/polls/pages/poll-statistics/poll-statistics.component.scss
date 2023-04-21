@@ -1,0 +1,12 @@
+.poll__results-list{
+  height: 200px;
+  overflow-y: scroll;
+  background-color: #E5EAD9;
+
+  .poll__results-title{
+    font-size: 24px;
+    font-weight: bolder;
+    text-align: center;
+    margin-top: 10px;
+  }
+}

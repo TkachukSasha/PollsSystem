@@ -18,6 +18,7 @@ internal class QuestionConfiguration : IEntityTypeConfiguration<Question>
 
         builder.HasOne(x => x.Poll)
                .WithMany(x => x.Questions)
-               .HasForeignKey(x => x.PollGid);
+               .HasForeignKey(x => x.PollGid)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }

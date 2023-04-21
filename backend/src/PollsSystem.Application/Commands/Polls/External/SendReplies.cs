@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using Mediator;
 using PollsSystem.Application.Commands.Base;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Application.Common.Channels;
 using PollsSystem.Application.Dto;
 using PollsSystem.Domain.Entities.Polls;
@@ -9,7 +8,6 @@ using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Dal.Utils;
 using PollsSystem.Utils.Statistics;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Polls.External;
 
@@ -28,20 +26,7 @@ public class SendRepliesValidator : AbstractValidator<SendReplies>
     }
 }
 
-public sealed record SendReplies(string PollGid, string FirstName, string LastName, Dictionary<string, string> QuestionAnswer) : ICommand<bool>, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new SendRepliesValidator();
-
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
+public sealed record SendReplies(string PollGid, string FirstName, string LastName, Dictionary<string, string> QuestionAnswer) : ICommand<bool>;
 
 public class SendRepliesHandler : BaseCommandHandler<SendReplies, bool>
 {

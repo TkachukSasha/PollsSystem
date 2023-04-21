@@ -24,6 +24,8 @@ builder.Services.AddPresentation();
 
 builder.Services.AddRateLimiter(rateLimiterOptions =>
 {
+    rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
     rateLimiterOptions.AddSlidingWindowLimiter("sliding", options =>
     {
         options.PermitLimit = 10;

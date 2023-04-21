@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpService } from "../../../core/services/http/http-service";
-import {map, Observable, tap} from "rxjs";
-import { CheckPollKey } from "../models/check-poll-key";
-import { ApiMethod } from "../../../core/enums/api-methods";
+import {Injectable} from '@angular/core';
+import {HttpService} from "../../../core/services/http/http-service";
+import {map, Observable} from "rxjs";
+import {CheckPollKey} from "../models/check-poll-key";
+import {ApiMethod} from "../../../core/enums/api-methods";
 import {SendReplies} from "../models/send-replies";
 import {DeletePoll} from "../models/delete-poll";
 import {CreatePoll} from "../models/create-poll";
@@ -13,7 +13,15 @@ import {ChangePollKey} from "../models/change-poll-key";
 import {ICreatePollResponse} from "../models/create-poll-response";
 import {ChangeQuestionText} from "../models/change-question-text";
 import {DeletePollQuestion} from "../models/delete-poll-question";
-import {IQuestionsWithAnswers} from "../models/question-model";
+import {IQuestionsWithAnswersAndScores} from "../models/question-model";
+import {ChangeAnswerText} from "../models/change-answer-text";
+import {DeleteQuestionAnswer} from "../models/delete-question-answer";
+import {IScore} from "../models/score";
+import {ChangeAnswerScore} from "../models/change-answer-score";
+import {CreatePollQuestions} from "../models/create-poll-questions";
+import {IPollResults} from "../models/poll-results";
+import {DeletePollResult} from "../models/delete-poll-result";
+import {ChangeResultScore} from "../models/change-result-score";
 
 @Injectable({
   providedIn: 'root'
@@ -144,11 +152,91 @@ export class PollsService {
       )
   }
 
-  getPollQuestions(pollGid: string) : Observable<IQuestionsWithAnswers[]>{
+  deletePollResult(payload: DeletePollResult) : Observable<boolean>{
+    let request = JSON.stringify(payload);
+
     // @ts-ignore
-    return this._http.requestCall<IQuestionsWithAnswers[]>(`/polls/questions?PollGid=${pollGid}`, ApiMethod.GET)
+    return  this._http.requestCall<boolean>(`/statistics/delete-result`, ApiMethod.DELETE, request)
+      .pipe(
+        map((data: boolean) => {
+          return data;
+        })
+      )
+  }
+
+  getPollQuestionsWithScores(pollGid: string) : Observable<IQuestionsWithAnswersAndScores[]>{
+    // @ts-ignore
+    return this._http.requestCall<IQuestionsWithAnswersAndScores[]>(`/polls/questions-with-scores?PollGid=${pollGid}`, ApiMethod.GET)
       .pipe(
         map(data => data)
+      )
+  }
+
+  getScores() : Observable<IScore[]>{
+    // @ts-ignore
+    return this._http.requestCall<IScore[]>(`/polls/scores`, ApiMethod.GET)
+      .pipe(
+        map(data => data)
+      )
+  }
+
+  changeAnswerText(payload: ChangeAnswerText) : Observable<boolean> {
+    let request = JSON.stringify(payload);
+
+    // @ts-ignore
+    return this._http.requestCall<boolean>(`/holders/change-answer-text`, ApiMethod.PATCH, request)
+      .pipe(
+        map((data: boolean) => {
+          return data;
+        })
+      )
+  }
+
+  changeAnswerScore(payload: ChangeAnswerScore) : Observable<boolean> {
+    let request = JSON.stringify(payload);
+
+    // @ts-ignore
+    return this._http.requestCall<boolean>(`/holders/change-answer-score`, ApiMethod.PATCH, request)
+      .pipe(
+        map((data: boolean) => {
+          return data;
+        })
+      )
+  }
+
+  changeResultScore(payload: ChangeResultScore) : Observable<boolean> {
+    let request = JSON.stringify(payload);
+
+    // @ts-ignore
+    return this._http.requestCall<boolean>(`/statistics/change-score`, ApiMethod.PATCH, request)
+      .pipe(
+        map((data: boolean) => {
+          return data;
+        })
+      )
+  }
+
+  deleteQuestionAnswer(payload: DeleteQuestionAnswer): Observable<boolean> {
+    let request = JSON.stringify(payload);
+
+    // @ts-ignore
+    return this._http.requestCall<boolean>(`/holders/delete-question-answer`, ApiMethod.DELETE, request)
+      .pipe(
+        map((data: boolean) => {
+          return data;
+        })
+      )
+  }
+
+  createPollQuestions(payload: CreatePollQuestions) : Observable<boolean> {
+    let request = JSON.stringify(payload);
+
+    // @ts-ignore
+    return this._http.requestCall<boolean>(`/holders/create-poll-questions`, ApiMethod.POST, request)
+      .pipe(
+        map((data: boolean) => {
+          return data;
+        })
       )
   }
 }

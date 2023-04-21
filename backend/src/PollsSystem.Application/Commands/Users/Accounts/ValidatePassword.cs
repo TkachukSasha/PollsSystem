@@ -1,11 +1,9 @@
 ﻿using FluentValidation;
 using Mediator;
-using PollsSystem.Application.Commands.Validation;
 using PollsSystem.Domain.Entities.Users;
 using PollsSystem.Shared.Api.Exceptions;
 using PollsSystem.Shared.Dal.Repositories;
 using PollsSystem.Shared.Security.Cryptography;
-using System.Diagnostics.CodeAnalysis;
 
 namespace PollsSystem.Application.Commands.Users.Accounts;
 
@@ -21,20 +19,7 @@ public class ValidatePasswordValidator : AbstractValidator<ValidatePassword>
     }
 }
 
-public sealed record ValidatePassword(string UserGid, string Password) : ICommand<bool>, IValidate
-{
-    public bool IsValid([NotNullWhen(false)] out ValidationError? error)
-    {
-        var validator = new ValidatePasswordValidator();
-
-        var result = validator.Validate(this);
-
-        if (result.IsValid) error = null;
-        else error = new ValidationError(result.Errors.Select(x => x.ErrorMessage).ToArray());
-
-        return result.IsValid;
-    }
-}
+public sealed record ValidatePassword(string UserGid, string Password) : ICommand<bool>;
 
 public class ValidatePasswordHandler : ICommandHandler<ValidatePassword, bool>
 {

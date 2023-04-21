@@ -15,17 +15,31 @@ public static class PollsQueryMapper
             poll.Key.Value
         );
 
-    public static QuestionsWithAnswersResponse ToQuestionsWithAnswersResponse(this Question question, List<Answer> answers)
-        => new QuestionsWithAnswersResponse(
+    public static QuestionsWithAnswersDefaultResponse ToQuestionsWithAnswersResponse(this Question question, List<Answer> answers)
+        => new QuestionsWithAnswersDefaultResponse(
             question.Gid,
             question.QuestionName.Value,
             answers.Select(x => x.ToAnswerResponse()).ToList()
         );
 
-    public static AnswerResponse ToAnswerResponse(this Answer answer)
-        => new AnswerResponse(
+    public static AnswerDefaultResponse ToAnswerResponse(this Answer answer)
+        => new AnswerDefaultResponse(
             answer.Gid,
             answer.AnswerText.Value
+        );
+
+    public static QuestionsWithAnswersAndScoresResponse ToQuestionsWithAnswersWithScoresResponse(this Question question, List<Answer> answers)
+        => new QuestionsWithAnswersAndScoresResponse(
+            question.Gid,
+            question.QuestionName.Value,
+            answers.Select(x => x.ToAnswerWithScoresResponse()).ToList()
+        );
+
+    public static AnswerWithScoresResponse ToAnswerWithScoresResponse(this Answer answer)
+        => new AnswerWithScoresResponse(
+            answer.Gid,
+            answer.AnswerText.Value,
+            answer.ScoreGid.ToString()
         );
 
     public static ScoreResponse ToScoreResponse(this Score score)

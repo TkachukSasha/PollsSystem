@@ -67,9 +67,13 @@ export class MyPollsComponent implements OnInit, OnDestroy {
     this.isCreateItemPopupShowed = true;
   }
 
+  onLaunchSelected(pollGid: string){
+    this.selectedPollGid = pollGid;
+    this.router.navigate(['/polls/poll-statistics/', pollGid]);
+  }
+
   onPollSelected(pollGid: string){
     this.selectedPollGid = pollGid;
-    console.log(`selectedPollGid ${this.selectedPollGid}`)
     // @ts-ignore
     this.poll = this.polls.find((item) => item.gid === this.selectedPollGid);
     this.isDeleteItemPopupShowed = true;
@@ -77,7 +81,6 @@ export class MyPollsComponent implements OnInit, OnDestroy {
 
   onPollTitleSelected(pollGid: string){
     this.selectedPollGid = pollGid;
-    console.log(`selectedPollGid ${this.selectedPollGid}`)
     // @ts-ignore
     this.poll = this.polls.find((item) => item.gid === this.selectedPollGid);
     this.isEditItemPopupShowed = true;
@@ -89,6 +92,11 @@ export class MyPollsComponent implements OnInit, OnDestroy {
 
   onCreateReject(status: boolean){
     this.isCreateItemPopupShowed = status;
+  }
+
+  onPollQuestionsCreated(status: boolean){
+    if(status)
+      this.isCreateItemPopupShowed = false;
   }
 
   onDeleted(status: boolean){
