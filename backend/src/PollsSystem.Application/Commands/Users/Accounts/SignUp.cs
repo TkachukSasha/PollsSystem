@@ -60,10 +60,6 @@ public class SignUpHandler : ICommandHandler<SignUp>
 
     public async ValueTask<Unit> Handle(SignUp command, CancellationToken cancellationToken)
     {
-        bool? isFirstNameUnique = await _baseRepository.IsFieldUniqueAsync<User>(x => x.FirstName == command.FirstName);
-
-        bool? isLastNameUnique = await _baseRepository.IsFieldUniqueAsync<User>(x => x.LastName == command.LastName);
-
         bool? isUserNameUnique = await _baseRepository.IsFieldUniqueAsync<User>(x => x.UserName == command.UserName);
 
         string securePassword = _passwordManager.Secure(command.Password);
@@ -77,8 +73,6 @@ public class SignUpHandler : ICommandHandler<SignUp>
                     command.UserName,
                     securePassword,
                     validRole,
-                    isFirstNameUnique,
-                    isLastNameUnique,
                     isUserNameUnique
         );
 

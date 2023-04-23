@@ -35,8 +35,8 @@ export class CreatePollComponentPopup implements OnInit {
     this.createPollForm = this.formBuilder.group({
       title: ['', [Validators.required, Validators.minLength(4)]],
       description: ['', [Validators.required, Validators.minLength(4)]],
-      numOfQuestions: ['', [Validators.required]],
-      duration: ['', [Validators.required]]
+      numOfQuestions: [null, [Validators.required]],
+      duration: [null, [Validators.required]]
     })
 
     this.createQuestionsToPoll = this.formBuilder.group({
@@ -102,8 +102,8 @@ export class CreatePollComponentPopup implements OnInit {
   handlePollCreation(){
     let title = this.createPollForm.controls['title'].value;
     let description = this.createPollForm.controls['description'].value;
-    this.numOfQuestions = this.createPollForm.controls['numOfQuestions'].value;
-    let duration = this.createPollForm.controls['duration'].value;
+    this.numOfQuestions = Number(this.createPollForm.controls['numOfQuestions'].value);
+    let duration = Number(this.createPollForm.controls['duration'].value);
 
     // @ts-ignore
     let data = JSON.parse(this._storage.getData('auth'));

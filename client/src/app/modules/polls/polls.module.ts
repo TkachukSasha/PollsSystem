@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
-import {CommonModule, Location} from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { PollsListComponent } from './pages/polls-list/polls-list.component';
 import { PollsItemComponent } from './components/polls-item/polls-item.component';
 import { PollsRoutingModule } from "./polls-routing.module";
 import { SharedModule } from "../../shared/shared.module";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
 import { FilterPollsPipe } from "./pipes/filter-polls.pipe";
 import { NgxSpinnerModule } from "ngx-spinner";
@@ -23,6 +23,10 @@ import { PollStatisticsComponent } from './pages/poll-statistics/poll-statistics
 import { PollResultItemComponent } from './components/poll-result-item/poll-result-item.component';
 import { DeleteResultPopupComponent } from './components/delete-result-popup/delete-result-popup.component';
 import { EditPollResultPopupComponent } from './components/edit-poll-result-popup/edit-poll-result-popup.component';
+import { GraphicsItemComponent } from './components/graphics-item/graphics-item.component';
+import { BarChartComponent } from './components/charts/bar-chart/bar-chart.component';
+import { PieChartComponent } from './components/charts/pie-chart/pie-chart.component';
+import { ExcelSelectorPopupComponent } from './components/excel-selector-popup/excel-selector-popup.component';
 
 @NgModule({
   declarations: [
@@ -43,17 +47,21 @@ import { EditPollResultPopupComponent } from './components/edit-poll-result-popu
     PollStatisticsComponent,
     PollResultItemComponent,
     DeleteResultPopupComponent,
-    EditPollResultPopupComponent
+    EditPollResultPopupComponent,
+    GraphicsItemComponent,
+    BarChartComponent,
+    PieChartComponent,
+    ExcelSelectorPopupComponent
   ],
-    imports: [
-        CommonModule,
-        PollsRoutingModule,
-        SharedModule,
-        FormsModule,
-        MatIconModule,
-        NgxSpinnerModule,
-        ReactiveFormsModule
-    ],
+  imports: [
+    CommonModule,
+    PollsRoutingModule,
+    SharedModule,
+    FormsModule,
+    MatIconModule,
+    NgxSpinnerModule,
+    ReactiveFormsModule
+  ],
   exports: [
     FilterPollsPipe
   ],

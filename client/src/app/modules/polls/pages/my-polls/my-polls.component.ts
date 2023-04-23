@@ -17,6 +17,7 @@ import { Location } from '@angular/common';
 export class MyPollsComponent implements OnInit, OnDestroy {
   isDeleteItemPopupShowed: boolean = false;
   isEditItemPopupShowed: boolean = false;
+  isExportItemPopupShowed: boolean = false;
   isCreateItemPopupShowed: boolean = false;
   isLoaded: boolean = false;
   searchText: string;
@@ -72,6 +73,13 @@ export class MyPollsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/polls/poll-statistics/', pollGid]);
   }
 
+  onExportSelected(pollGid: string){
+    this.selectedPollGid = pollGid;
+    // @ts-ignore
+    this.poll = this.polls.find((item) => item.gid === this.selectedPollGid);
+    this.isExportItemPopupShowed = true;
+  }
+
   onPollSelected(pollGid: string){
     this.selectedPollGid = pollGid;
     // @ts-ignore
@@ -84,6 +92,10 @@ export class MyPollsComponent implements OnInit, OnDestroy {
     // @ts-ignore
     this.poll = this.polls.find((item) => item.gid === this.selectedPollGid);
     this.isEditItemPopupShowed = true;
+  }
+
+  onExportReject(status: boolean){
+    this.isExportItemPopupShowed = status;
   }
 
   onEditReject(status: boolean){

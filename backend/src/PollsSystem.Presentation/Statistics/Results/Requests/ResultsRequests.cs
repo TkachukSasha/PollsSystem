@@ -6,6 +6,6 @@ public record DeleteResultRequest(string PollGid, string ResultGid);
 
 public record GetResultsQuery(string PollGid);
 
-public record GetResultQuery(string PollGid, string LastName);
+public record GetResultQuery(string PollGid, string FirstName, string LastName);
 
 public record GetResultsByLastNameQuery(string PollGid, string LastName);

@@ -22,6 +22,7 @@ import {CreatePollQuestions} from "../models/create-poll-questions";
 import {IPollResults} from "../models/poll-results";
 import {DeletePollResult} from "../models/delete-poll-result";
 import {ChangeResultScore} from "../models/change-result-score";
+import {ICalculations} from "../models/poll-calculations";
 
 @Injectable({
   providedIn: 'root'

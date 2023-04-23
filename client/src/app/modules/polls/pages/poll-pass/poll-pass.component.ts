@@ -52,14 +52,14 @@ export class PollPassComponent implements OnInit, OnDestroy {
     this.data = JSON.parse(this._storage.getData('auth'));
 
     // @ts-ignore
-    this.existingResultSubscription = this._http.requestCall<boolean>(`/statistics/get-result?PollGid=${this.pollGid}&LastName=${this.data?.lastName}`, ApiMethod.GET)
+    this.existingResultSubscription = this._http.requestCall<boolean>(`/statistics/get-result?PollGid=${this.pollGid}&FirstName=${data?.firstName}&LastName=${this.data?.lastName}`, ApiMethod.GET)
       .pipe(
         map((data) => this.isResultExist = data),
         tap(() => this.onRequestExecuted())
       )
       .subscribe(
-        () => {}, // Success callback
-        (error) => console.error(error) // Error callback
+        () => {},
+        (error) => console.error(error)
       );
 
     if(this.isResultExist === false){

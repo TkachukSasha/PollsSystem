@@ -38,18 +38,8 @@ public sealed class User : Entity
         string userNameRequest,
         string password,
         Role? validRole,
-        bool? isFirstNameUnique,
-        bool? isLastNameUnique,
         bool? isUserNameUnique)
     {
-        if (!isFirstNameUnique.GetValueOrDefault())
-            throw new BaseException(ExceptionCodes.ValueAlreadyExist,
-                $"FirstName: {firstNameRequest} is already exist");
-
-        if (!isLastNameUnique.GetValueOrDefault())
-            throw new BaseException(ExceptionCodes.ValueAlreadyExist,
-                $"LastName: {lastNameRequest} is already exist");
-
         if (!isUserNameUnique.GetValueOrDefault())
             throw new BaseException(ExceptionCodes.ValueAlreadyExist,
                 $"UserName: {userNameRequest} is already exist");

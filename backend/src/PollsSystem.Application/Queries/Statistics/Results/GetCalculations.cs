@@ -8,7 +8,7 @@ using PollsSystem.Shared.Dal.Repositories;
 
 namespace PollsSystem.Application.Queries.Statistics.Results;
 
-public record GetCalculations(StatisticType Type, Guid PollGid) : IQuery<Calculations>;
+public record GetCalculations(StatisticType Type, string PollGid) : IQuery<Calculations>;
 
 public class GetCalculationsHandler : IQueryHandler<GetCalculations, Calculations?>
 {
@@ -27,7 +27,7 @@ public class GetCalculationsHandler : IQueryHandler<GetCalculations, Calculation
     {
         List<double> _scores = new();
 
-        var results = await _baseRepository.GetEntitiesByConditionAsync<Result>(x => x.PollGid == query.PollGid);
+        var results = await _baseRepository.GetEntitiesByConditionAsync<Result>(x => x.PollGid == Guid.Parse(query.PollGid));
 
         if (!results.Any() || results is null)
             throw new BaseException(ExceptionCodes.ValueIsNullOrEmpty,

@@ -1,0 +1,22 @@
+<div class="graphics__item-wrapper">
+  <ul class="graphics__item-tabs">
+    <li (click)="onTabClick('BarChart')" class="graphics__item-tab" [class.active]="activeTab === 'BarChart'">
+      BarChart
+    </li>
+    <li (click)="onTabClick('PieChart')" class="graphics__item-tab" [class.active]="activeTab === 'PieChart'">
+      PieChart
+    </li>
+  </ul>
+  <div *ngIf="activeTab === 'BarChart'" class="graphics__item-bar">
+    <app-bar-chart
+      [results]="results"
+    >
+    </app-bar-chart>
+  </div>
+  <div *ngIf="activeTab === 'PieChart'" class="graphics__item-bar">
+    <app-pie-chart
+      [results]="results"
+    >
+    </app-pie-chart>
+  </div>
+</div>

@@ -15,6 +15,8 @@ export class MyPollItemComponent implements OnInit {
   pollSelected: EventEmitter<string> = new EventEmitter<string>();
   @Output()
   pollLaunchSelected: EventEmitter<string> = new EventEmitter<string>();
+  @Output()
+  pollExportSelected: EventEmitter<string> = new EventEmitter<string>();
 
   constructor() { }
 
@@ -22,12 +24,15 @@ export class MyPollItemComponent implements OnInit {
   }
 
   onTitleClick(){
-    console.log(`selected`)
     this.pollTitleSelected.emit(this.poll.gid);
   }
 
   onLaunch(){
     this.pollLaunchSelected.emit(this.poll.gid);
+  }
+
+  onExport(){
+    this.pollExportSelected.emit(this.poll.gid);
   }
 
   onDeletePoll(){

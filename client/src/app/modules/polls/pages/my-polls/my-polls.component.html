@@ -15,6 +15,7 @@
 <div class="polls__list" *ngIf="polls$ | async as polls">
   <app-my-poll-item
     (pollLaunchSelected)="onLaunchSelected($event)"
+    (pollExportSelected)="onExportSelected($event)"
     (pollTitleSelected)="onPollTitleSelected($event)"
     (pollSelected)="onPollSelected($event)"
     *ngFor="let poll of polls | filterPolls: searchText"
@@ -40,6 +41,12 @@
   [poll]="poll"
 >
 </app-edit-poll-popup>
+
+<app-excel-selector-popup
+  (pollExportRejected)="onExportReject($event)"
+  *ngIf="isExportItemPopupShowed"
+  [poll]="poll"
+></app-excel-selector-popup>
 
 <app-delete-poll-popup
   (pollDeleted)="onDeleted($event)"

@@ -1,0 +1,15 @@
+<div class="excel__selector-wrapper">
+  <h3 class="excel__selector-title">Select type of calculation which you would like to export</h3>
+  <div class="excel__selector-content" *ngFor="let calculation of calculations">
+    <div class="excel__selector-types">
+      <h3 class="excel__selector-sub-title">{{ calculation.name }}</h3>
+    </div>
+    <div class="excel__selector-checkboxes">
+      <input class="excel__selector-check" type="checkbox" [disabled]="calculation.disabled" [value]="calculation.id" (change)="onCheckboxChange($event)">
+    </div>
+  </div>
+  <div class="excel__selector--actions">
+    <button class="excel__selector-actions-confrim" type="submit" (click)="onExport()">Export</button>
+    <button class="excel__selector-actions-reject" type="submit" (click)="onReject()">Back</button>
+  </div>
+</div>

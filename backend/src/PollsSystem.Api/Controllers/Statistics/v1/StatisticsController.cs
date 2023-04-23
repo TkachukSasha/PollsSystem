@@ -26,7 +26,7 @@ public class StatisticsController : BaseController
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
     }
 
-    [HttpGet("calcultions")]
+    [HttpGet("calculations")]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async ValueTask<IActionResult> GetCalculations([FromQuery] GetCalculations query, CancellationToken cancellationToken)
@@ -43,7 +43,7 @@ public class StatisticsController : BaseController
     {
         var pollGid = Guid.Parse(query.PollGid);
 
-        var result = await _repository.GetByConditionAsync<Result>(x => x.PollGid == pollGid && x.LastName == query.LastName);
+        var result = await _repository.GetByConditionAsync<Result>(x => x.PollGid == pollGid && x.FirstName == query.FirstName && x.LastName == query.LastName);
 
         return result is null ? Ok(false) : Ok(true);
     }

@@ -1,3 +1,10 @@
+<div class="poll__results-graphics">
+  <app-graphics-item
+    [results]="pollResults"
+  >
+  </app-graphics-item>
+</div>
+
 <div class="poll__results-list" *ngIf="pollResults$ | async as results">
   <h1 class="poll__results-title">Results</h1>
   <app-poll-result-item

@@ -12,6 +12,7 @@
 
 .create__poll-wrapper{
   width: 75%;
+  overflow-y: scroll;
   background-color: #E5EAD9;
   padding: 0 20px;
   text-align: center;
@@ -84,7 +85,6 @@
 }
 
 .create__poll-questions{
-  overflow-y: scroll;
   height: 607px;
 
   .current__numOfQuestions{
