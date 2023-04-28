@@ -131,6 +131,7 @@ export class CreatePollComponentPopup implements OnInit {
     this._pollsService.createPollQuestions(request)
       .subscribe((data) => {
         if(data)
+          console.log(data)
           this.onCreated();
           location.reload();
       })

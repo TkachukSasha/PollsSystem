@@ -2,6 +2,8 @@
   "profiles": {
     "PollsSystem.Api_Dev": {
       "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -10,6 +12,8 @@
     },
     "PollsSystem.Api_Prod": {
       "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       },

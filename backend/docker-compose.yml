@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  postgres:
+    image: postgres
+
+  seq:
+    image: datalust/seq 
+
+  proxy:
+    image: nginx:mainline
+
+  certbot:
+    image: certbot/certbot
+
+  polls-system-api:
+    image: polls-system-api
+    build:
+      context: .
+      dockerfile: src/PollsSystem.Api/Dockerfile
+
+  polls-system-client:
+    image: polls-system-client
+    build:
+     context: ../client
+     dockerfile: Dockerfile
+
+
+volumes:
+  postgres:
+    driver: local
+  seq:
+    driver: local

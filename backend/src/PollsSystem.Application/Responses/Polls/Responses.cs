@@ -4,10 +4,10 @@ public record PollResponse(Guid Gid, string Title, string Description, int Numbe
 
 public record QuestionsWithAnswersDefaultResponse(Guid Gid, string QuestionName, List<AnswerDefaultResponse> Answers);
 
-public record AnswerDefaultResponse(Guid Gid, string AnswerName);
+public record AnswerDefaultResponse(Guid Gid, string AnswerText);
 
 public record QuestionsWithAnswersAndScoresResponse(Guid Gid, string QuestionName, List<AnswerWithScoresResponse> Answers);
 
-public record AnswerWithScoresResponse(Guid Gid, string AnswerName, string ScoreGid);
+public record AnswerWithScoresResponse(Guid Gid, string AnswerText, string ScoreGid);
 
 public record ScoreResponse(Guid ScoreGid, double ScoreValue);

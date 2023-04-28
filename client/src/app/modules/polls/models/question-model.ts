@@ -6,7 +6,7 @@ export interface IQuestionsWithAnswers{
 
 export interface IAnswer{
   gid: string;
-  answerName: string;
+  answerText: string;
 }
 
 export interface IQuestionsWithAnswersAndScores{
@@ -17,6 +17,6 @@ export interface IQuestionsWithAnswersAndScores{
 
 export interface IAnswerWithScores{
   gid: string;
-  answerName: string;
+  answerText: string;
   scoreGid: string;
 }

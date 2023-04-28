@@ -23,11 +23,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PollsSystem.Utils", "src\Po
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logics", "logics", "{CE8E6D7F-4D13-45AA-B8A4-F26D55112920}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollsSystem.Statistics.Logics.Tests", "tests\logics\PollsSystem.Statistics.Logics.Tests\PollsSystem.Statistics.Logics.Tests.csproj", "{413EB7FE-0587-4A67-AA40-5444162C552D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PollsSystem.Statistics.Logics.Tests", "tests\logics\PollsSystem.Statistics.Logics.Tests\PollsSystem.Statistics.Logics.Tests.csproj", "{413EB7FE-0587-4A67-AA40-5444162C552D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{D266512E-D42F-4FC1-9779-52CBFCC498BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollsSystem.Statistics.Logics.Benchmarks", "tests\benchmarks\PollsSystem.Statistics.Logics.Benchmarks\PollsSystem.Statistics.Logics.Benchmarks.csproj", "{C66A9D0C-163F-4F97-9708-24264FF23269}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PollsSystem.Statistics.Logics.Benchmarks", "tests\benchmarks\PollsSystem.Statistics.Logics.Benchmarks\PollsSystem.Statistics.Logics.Benchmarks.csproj", "{C66A9D0C-163F-4F97-9708-24264FF23269}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{9BA63771-5C90-4DD0-9565-3CE78BF62E88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{C66A9D0C-163F-4F97-9708-24264FF23269}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C66A9D0C-163F-4F97-9708-24264FF23269}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C66A9D0C-163F-4F97-9708-24264FF23269}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BA63771-5C90-4DD0-9565-3CE78BF62E88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BA63771-5C90-4DD0-9565-3CE78BF62E88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BA63771-5C90-4DD0-9565-3CE78BF62E88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BA63771-5C90-4DD0-9565-3CE78BF62E88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

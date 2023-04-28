@@ -1,8 +1,6 @@
-FROM node:14-alpine as build
+FROM node:alpine
 
-WORKDIR /app
-
-RUN npm install -g @angular/cli
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 
@@ -10,8 +8,8 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
+RUN npm run build --prod
 
 EXPOSE 4200
 
-CMD app/node_modules/.bin/ng serve --host 0.0.0.0 --disableHostCheck
+CMD /usr/src/app/node_modules/.bin/ng serve --host 0.0.0.0 --disableHostCheck

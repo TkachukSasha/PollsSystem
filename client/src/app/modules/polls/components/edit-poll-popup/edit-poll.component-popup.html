@@ -76,13 +76,13 @@
         <div *ngFor="let answer of question.answers">
           <div class="answer__items-content">
             <div class="edit__item-input-wrap">
-              <input class="edit__item-input" type="text" [(ngModel)]="answer.answerName" [disabled]="isDisabled">
+              <input class="edit__item-input" type="text" [(ngModel)]="answer.answerText" [disabled]="isDisabled">
             </div>
             <div class="edit__item-icons">
               <select class="edit__item-selector" [(ngModel)]="selectedAnswerScoreGids[answer.gid]">
                 <option *ngFor="let score of scores" [value]="score.scoreGid" [selected]="score.scoreGid === selectedAnswerScoreGids[answer.gid]">{{score.scoreValue}}</option>
               </select>
-              <mat-icon class="edit__item-icon" (click)="onAnswerTextChange(question.gid, answer.gid, answer.answerName, answer.scoreGid, selectedAnswerScoreGids[answer.gid])">update</mat-icon>
+              <mat-icon class="edit__item-icon" (click)="onAnswerTextChange(question.gid, answer.gid, answer.answerText, answer.scoreGid, selectedAnswerScoreGids[answer.gid])">update</mat-icon>
               <mat-icon class="edit__item-icon" (click)="onAnswerRemove(question.gid, answer.gid)">remove</mat-icon>
             </div>
           </div>

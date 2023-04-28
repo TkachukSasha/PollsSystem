@@ -29,7 +29,7 @@
       <hr class="polls__questions-hr"/>
       <div class="polls__answers" *ngFor="let option of question.answers">
         <div class="polls__answers-title">
-          <h3 class="polls__answer-name">{{ option.answerName }}</h3>
+          <h3 class="polls__answer-name">{{ option.answerText }}</h3>
         </div>
         <div class="polls__answers-input-wrapper">
           <input class="polls__answer-input" type="radio" name="{{ question.gid }}" [value]="option.gid"
