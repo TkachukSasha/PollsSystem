@@ -35,8 +35,8 @@ services:
   #  depends_on:
   #    - proxy
   #  volumes:
-  #    - ./certbot/conf:/etc/letsencrypt
-  #    - ./certbot/www:/var/www/certbot
+  #    - ../proxy/certbot/conf:/etc/letsencrypt
+  #    - ../proxy/certbot/www:/var/www/certbot
   #  command: certonly --webroot --webroot-path=/var/www/certbot --force-renewal --email tkachuko_09@knu.ua --agree-tos --no-eff-email -d polls-system.com -d www.polls-system.com
 
   polls-system-api:
