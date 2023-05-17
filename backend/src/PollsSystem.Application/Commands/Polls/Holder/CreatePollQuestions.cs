@@ -66,9 +66,9 @@ public class CreatePollQuestionsHandler : BaseCommandHandler<CreatePollQuestions
     }
 
     public override async ValueTask<bool> Handle(CreatePollQuestions command, CancellationToken cancellationToken)
-          => await _transactionalRepository.ExecuteTransactionAsync(ProcessQuestionsAndAnswersCreation, command, cancellationToken);
+          => await _transactionalRepository.ExecuteTransactionAsync(ProcessQuestionsAndAnswersCreationAsync, command, cancellationToken);
 
-    private async ValueTask<bool> ProcessQuestionsAndAnswersCreation(
+    private async ValueTask<bool> ProcessQuestionsAndAnswersCreationAsync(
        CreatePollQuestions command,
        CancellationToken cancellationToken)
     {

@@ -33,9 +33,9 @@ public class DeletePollHandler : BaseCommandHandler<DeletePoll, bool>
     }
 
     public override async ValueTask<bool> Handle(DeletePoll command, CancellationToken cancellationToken)
-        => await _transactionalRepository.ExecuteTransactionAsync(ProcessPollDelete, command, cancellationToken);
+        => await _transactionalRepository.ExecuteTransactionAsync(ProcessPollDeleteAsync, command, cancellationToken);
 
-    private async ValueTask<bool> ProcessPollDelete(
+    private async ValueTask<bool> ProcessPollDeleteAsync(
         DeletePoll command,
         CancellationToken cancellationToken)
     {
