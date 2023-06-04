@@ -11,6 +11,8 @@ You need to navigate to dir -> "dir_where_you_clone_the_project"/backend
 
 After that you can run the application using this command -> docker-compose up -d
 
+When all containers successfully started you can write in the browser uri -> http://localhost and the application should be successfully find
+
 ## Tech stack
 
 ### Backend: 
