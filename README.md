@@ -3,6 +3,14 @@ A web app that allows manipulating tests.
 In that platform you may create, edit, delete tests, and also look at and export statistics that you want.
 The platform is reliable because it provides important points, such as user authorization, the ability to pass the test under your account no more than once, as well as random generation of questions on the test, which provides greater complexity and fairness of the test and a fair assessment of the user.
 
+## How to run the application
+
+First of all, you need to start docker desktop application on your local pc
+
+You need to navigate to dir -> "dir_where_you_clone_the_project"/backend
+
+After that you can run the application using this command -> docker-compose up -d
+
 ## Tech stack
 
 ### Backend: 
